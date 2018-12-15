@@ -1,0 +1,16 @@
+**/.idea
+**.iml
+**/target
+
+# Mac
+.DS_Store
+  
+# Maven
+**/log/
+**/target/
+
+#Gradle
+**/build/
+**/gradle/
+**/.gradle/
+**/JPh_chapter12_Strings/
