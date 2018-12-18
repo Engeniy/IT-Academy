@@ -32,12 +32,12 @@ public class CreditCard {
         this.currentAmount = currentAmount;
     }
 
-    public void transferToAccount(double transferSum) {
+    public void transferSumToAccount(double transferSum) {
         currentAmount += transferSum;
     }
 
     // As for me we can't write this method without check, cause currentAmount can't be negative
-    public void withdrawFromAccount(double withdrawSum) {
+    public void withdrawSumFromAccount(double withdrawSum) {
         if (currentAmount - withdrawSum < 0) {
             System.out.println("Illegal withdraw sum! Not enough money!");
             return;
