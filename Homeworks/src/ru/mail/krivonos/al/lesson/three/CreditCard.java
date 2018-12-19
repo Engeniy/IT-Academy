@@ -1,26 +1,26 @@
 package ru.mail.krivonos.al.lesson.three;
 
 public class CreditCard {
-    private int accountNumber;
+    private long accountNumber;
     private double currentAmount;
 
     public CreditCard() {
     }
 
-    public CreditCard(int accountNumber) {
+    public CreditCard(long accountNumber) {
         this.accountNumber = accountNumber;
     }
 
-    public CreditCard(int accountNumber, double currentAmount) {
+    public CreditCard(long accountNumber, double currentAmount) {
         this.accountNumber = accountNumber;
         this.currentAmount = currentAmount;
     }
 
-    public int getAccountNumber() {
+    public long getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(int accountNumber) {
+    public void setAccountNumber(long accountNumber) {
         this.accountNumber = accountNumber;
     }
 
