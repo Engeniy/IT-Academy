@@ -33,14 +33,14 @@ public class ConsoleInputAndRandom {
 
     private void printArray(int[] targetArray) {
         System.out.println("Your array:");
-        for (int element: targetArray) {
+        for (int element : targetArray) {
             System.out.print(element);
             System.out.print(" ");
         }
         System.out.println();
     }
 
-   int[] fillArrayWithRandomNumbers(int arraySize,  int startOfScope, int endOfScope) {
+    int[] fillArrayWithRandomNumbers(int arraySize, int startOfScope, int endOfScope) {
         int[] targetArray = new int[arraySize];
         for (int i = 0; i < arraySize; i++) {
             targetArray[i] = random.nextInt(endOfScope - startOfScope + 1) + startOfScope;
@@ -51,7 +51,7 @@ public class ConsoleInputAndRandom {
 
     int countEvenInArray(int[] targetArray) {
         int evenCounter = 0;
-        for (int element: targetArray) {
+        for (int element : targetArray) {
             if (element % 2 == 0) {
                 evenCounter++;
             }
@@ -60,6 +60,9 @@ public class ConsoleInputAndRandom {
     }
 
     void printRandomNumberFromScope(int scopeBorder) {
+        if (scopeBorder < 0) {
+            scopeBorder = -scopeBorder;
+        }
         int targetNumber = random.nextInt(2 * scopeBorder + 1) - scopeBorder;
         System.out.println(targetNumber);
     }
