@@ -31,6 +31,20 @@ public class ConsoleInputAndRandom {
         System.out.println(numeralsSum);
     }
 
+    void printNumberNumeralsSumAndCounter2(int targetNumber) {
+        int numeralsSum = 0;
+        int numeralsCounter = 0;
+        while (targetNumber > 0) {
+            numeralsSum += targetNumber % 10;
+            numeralsCounter++;
+            targetNumber /= 10;
+        }
+        System.out.print("Your number contains ");
+        System.out.print(numeralsCounter);
+        System.out.print(" numerals and their sum is ");
+        System.out.println(numeralsSum);
+    }
+
     private void printArray(int[] targetArray) {
         System.out.println("Your array:");
         for (int element : targetArray) {

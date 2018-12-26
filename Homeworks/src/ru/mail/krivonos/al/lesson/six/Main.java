@@ -10,6 +10,7 @@ public class Main {
         System.out.println("Input your number:");
         int targetNumber = scanner.nextInt();
         consoleInputAndRandom.printNumberNumeralsSumAndCounter(targetNumber);
+        System.out.println();
 
         System.out.println("Input array size:");
         int arraySize = scanner.nextInt();
@@ -22,9 +23,15 @@ public class Main {
         System.out.print("Your array contains ");
         System.out.print(evenCounter);
         System.out.println(" even numbers");
+        System.out.println();
 
         System.out.println("Input scope border:");
         int scopeBorder = scanner.nextInt();
         consoleInputAndRandom.printRandomNumberFromScope(scopeBorder);
+        System.out.println();
+
+        System.out.println("Input your number:");
+        targetNumber = scanner.nextInt();
+        consoleInputAndRandom.printNumberNumeralsSumAndCounter2(targetNumber);
     }
 }
