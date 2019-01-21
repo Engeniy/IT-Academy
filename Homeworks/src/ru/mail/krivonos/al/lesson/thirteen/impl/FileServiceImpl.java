@@ -12,15 +12,15 @@ public class FileServiceImpl implements FileService {
             validateFile(targetFile);
         }
         List<Integer> integers = new ArrayList<>();
-        try (Scanner scanner = new Scanner(targetFile)) {
-            while (scanner.hasNext()) {
-                if (scanner.hasNextInt()) {
-                    integers.add(scanner.nextInt());
-                } else {
-                    scanner.next();
+        try (BufferedReader br = new BufferedReader(new FileReader(targetFile))) {
+            String input = br.readLine();
+            while (input != null) {
+                for (String number : input.split("\\W")) {
+                    integers.add(Integer.parseInt(number));
                 }
+                input = br.readLine();
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
