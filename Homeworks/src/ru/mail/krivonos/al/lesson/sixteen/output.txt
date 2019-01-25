@@ -1,0 +1,5 @@
+ArrayToFileWriter0 -11 -19 -7 -20 15 48 -37 -17 3 18 
+ArrayToFileWriter1 -29 2 44 -23 -1 -27 12 -37 -8 26 
+ArrayToFileWriter2 -28 26 20 -20 -39 -17 -20 -38 28 -47 
+ArrayToFileWriter3 20 33 -33 -14 -20 -3 -3 -27 8 -16 
+ArrayToFileWriter4 13 39 50 44 -30 6 40 -3 12 -22 
