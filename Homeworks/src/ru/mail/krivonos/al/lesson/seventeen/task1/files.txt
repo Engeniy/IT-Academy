@@ -1,0 +1,10 @@
+С:\WebServers\home\testsite\www\myfile.txt
+С:\WebServers\home\testsite\www\mytestfile.txt
+С:\WebServers\home\testsite\www\myjavafile.txt
+С:\WebServers\home\testsite\www\pojodescription.txt
+С:\WebServers\home\testsite\www\helloworld.txt
+С:\WebServers\home\testsite\www\data.txt
+С:\WebServers\home\testsite\www\info.txt
+С:\WebServers\home\testsite\www\property.txt
+С:\WebServers\home\testsite\www\url.txt
+С:\WebServers\home\testsite\www\wishlist.txt
