@@ -1,4 +1,4 @@
-package ru.mail.krivonos.al.lesson.sixteen.model;
+package ru.mail.krivonos.al.lesson.sixteen.task;
 
 import ru.mail.krivonos.al.lesson.sixteen.RandomService;
 

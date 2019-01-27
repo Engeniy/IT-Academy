@@ -1,13 +1,11 @@
 package ru.mail.krivonos.al.lesson.sixteen.app;
 
-import ru.mail.krivonos.al.lesson.sixteen.InfoPrinterService;
-import ru.mail.krivonos.al.lesson.sixteen.InfoPrinterServiceImpl;
+import ru.mail.krivonos.al.lesson.sixteen.task.PrintInfoTask;
 import ru.mail.krivonos.al.lesson.sixteen.RandomService;
 import ru.mail.krivonos.al.lesson.sixteen.impl.RandomServiceImpl;
-import ru.mail.krivonos.al.lesson.sixteen.model.ArrayMaxPrinter;
-import ru.mail.krivonos.al.lesson.sixteen.model.ArrayToFileWriter;
-import ru.mail.krivonos.al.lesson.sixteen.model.InfoPrinter;
-import ru.mail.krivonos.al.lesson.sixteen.model.RandomArrayUser;
+import ru.mail.krivonos.al.lesson.sixteen.task.ArrayMaxPrintTask;
+import ru.mail.krivonos.al.lesson.sixteen.task.ArrayToFileWriteTask;
+import ru.mail.krivonos.al.lesson.sixteen.impl.InfoPrintServiceImpl;
 
 import java.io.File;
 
@@ -15,9 +13,9 @@ public class Main {
     public static void main(String[] args) {
         RandomService randomService = new RandomServiceImpl();
 
-        RandomArrayUser randomArrayUser;
+        Thread randomArrayUser;
         for (int i = 0; i < 10; i++) {
-            randomArrayUser = new ArrayMaxPrinter("ArrayMaxPrinter" + i, 10, 50, randomService);
+            randomArrayUser = new ArrayMaxPrintTask("ArrayMaxPrintTask" + i, 10, 50, randomService);
             randomArrayUser.start();
             try {
                 randomArrayUser.join();
@@ -32,12 +30,12 @@ public class Main {
         String fileName = "src" + fs + "ru" + fs + "mail" + fs + "krivonos" + fs + "al" + fs + "lesson" + fs +
                 "sixteen" + fs + "output.txt";
         for (int i = 0; i < 5; i++) {
-            randomArrayUser = new ArrayToFileWriter("ArrayToFileWriter" + i, 10, 50, randomService, fileName);
+            randomArrayUser = new ArrayToFileWriteTask("ArrayToFileWriteTask" + i, 10, 50, randomService, fileName);
             randomArrayUser.start();
         }
 
-        InfoPrinter infoPrinter = new InfoPrinter();
-        InfoPrinterService infoPrinterService = new InfoPrinterServiceImpl(infoPrinter);
+        InfoPrintServiceImpl infoPrinter = new InfoPrintServiceImpl();
+        Runnable infoPrinterService = new PrintInfoTask(infoPrinter);
         Thread thread;
         for (int i = 0; i < 10; i++) {
             thread = new Thread(infoPrinterService, "InfoPrinterService" + i);

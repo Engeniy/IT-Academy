@@ -1,9 +1,12 @@
-package ru.mail.krivonos.al.lesson.sixteen.model;
+package ru.mail.krivonos.al.lesson.sixteen.impl;
+
+import ru.mail.krivonos.al.lesson.sixteen.InfoPrintService;
 
 import java.time.LocalTime;
 
-public class InfoPrinter {
+public class InfoPrintServiceImpl implements InfoPrintService {
 
+    @Override
     public synchronized void printInfo() {
         LocalTime localTime = LocalTime.now();
         System.out.println(Thread.currentThread().getName() + " Time: " + localTime);

@@ -1,11 +1,11 @@
-package ru.mail.krivonos.al.lesson.sixteen.model;
+package ru.mail.krivonos.al.lesson.sixteen.task;
 
 import ru.mail.krivonos.al.lesson.sixteen.RandomService;
 
-public class ArrayMaxPrinter extends RandomArrayUser {
+public class ArrayMaxPrintTask extends RandomArrayUser {
 
 
-    public ArrayMaxPrinter(String s, int capacity, int range, RandomService randomService) {
+    public ArrayMaxPrintTask(String s, int capacity, int range, RandomService randomService) {
         super(s, capacity, range, randomService);
     }
 

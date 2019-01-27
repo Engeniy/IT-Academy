@@ -1,4 +1,4 @@
-package ru.mail.krivonos.al.lesson.sixteen.model;
+package ru.mail.krivonos.al.lesson.sixteen.task;
 
 import ru.mail.krivonos.al.lesson.sixteen.RandomService;
 
@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ArrayToFileWriter extends RandomArrayUser {
+public class ArrayToFileWriteTask extends RandomArrayUser {
 
     private String fileName;
 
-    public ArrayToFileWriter(String s, int capacity, int range, RandomService randomService, String fileName) {
+    public ArrayToFileWriteTask(String s, int capacity, int range, RandomService randomService, String fileName) {
         super(s, capacity, range, randomService);
         this.fileName = fileName;
     }
