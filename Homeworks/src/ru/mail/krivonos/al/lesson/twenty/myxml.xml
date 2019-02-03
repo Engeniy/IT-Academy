@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stock xmlns="https://www.it-academy.by"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://www.it-academy.by myschema.xsd">
+    <stock_id>1</stock_id>
+    <stock_code>Def_stock</stock_code>
+    <stock_name>Default stock</stock_name>
+    <category>
+        <category_id>10</category_id>
+        <name>Default category</name>
+        <desc>My default category</desc>
+    </category>
+    <stock_daily_records>
+        <bucket>
+            <stock_daily_record>
+                <record_id>15</record_id>
+                <price_open>26.8</price_open>
+                <price_close>30.6</price_close>
+                <price_change>2.5</price_change>
+                <volume>23456</volume>
+                <date>1995-07-03</date>
+            </stock_daily_record>
+            <stock_daily_record>
+                <record_id>19</record_id>
+                <price_open>78.8</price_open>
+                <price_close>39.6</price_close>
+                <price_change>29.5</price_change>
+                <volume>23466556</volume>
+                <date>1995-08-03</date>
+            </stock_daily_record>
+        </bucket>
+        <bucket>
+            <stock_daily_record>
+                <record_id>24</record_id>
+                <price_open>45.8</price_open>
+                <price_close>87.6</price_close>
+                <price_change>14.5</price_change>
+                <volume>287976</volume>
+                <date>1995-07-09</date>
+            </stock_daily_record>
+            <stock_daily_record>
+                <record_id>24</record_id>
+                <price_open>45.8</price_open>
+                <price_close>87.6</price_close>
+                <price_change>14.5</price_change>
+                <volume>287976</volume>
+                <date>1995-07-09</date>
+            </stock_daily_record>
+            <stock_daily_record>
+                <record_id>24</record_id>
+                <price_open>45.8</price_open>
+                <price_close>87.6</price_close>
+                <price_change>14.5</price_change>
+                <volume>287976</volume>
+                <date>1995-07-09</date>
+            </stock_daily_record>
+        </bucket>
+    </stock_daily_records>
+</stock>

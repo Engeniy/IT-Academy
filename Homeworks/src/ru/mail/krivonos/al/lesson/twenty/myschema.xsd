@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://www.it-academy.by"
+           xmlns="https://www.it-academy.by"
+           elementFormDefault="qualified">
+    <xs:element name="category">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="category_id" type="xs:integer"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="desc" type="xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="stock_daily_record">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="record_id" type="xs:integer"/>
+                <xs:element name="price_open" type="xs:decimal"/>
+                <xs:element name="price_close" type="xs:decimal"/>
+                <xs:element name="price_change" type="xs:decimal"/>
+                <xs:element name="volume" type="xs:long"/>
+                <xs:element name="date" type="xs:date"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="stock">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="stock_id" type="xs:integer"/>
+                <xs:element name="stock_code" type="xs:string"/>
+                <xs:element name="stock_name" type="xs:string"/>
+                <xs:element ref="category"/>
+                <xs:element ref="stock_daily_records"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="stock_daily_records">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="bucket" maxOccurs="20"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bucket">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="stock_daily_record" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="set">
+            <xs:selector xpath="stock_daily_record"/>
+            <xs:field xpath="."/>
+        </xs:unique>
+    </xs:element>
+</xs:schema>
