@@ -12,7 +12,9 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        String fileName = "src/ru/mail/krivonos/al/lesson/twentyone/resources/myxml.xml";
+        String fs = File.separator;
+        String fileName = "src" + fs + "ru" + fs + "mail" + fs + "krivonos" + fs + "al" + fs + "lesson" + fs +
+                "twentyone" + fs + "resources" + fs + "myxml.xml";
         File file = new File(fileName);
         SAXService saxService = SAXServiceImpl.getInstance();
         DefaultHandler handler = new CatalogHandler();
