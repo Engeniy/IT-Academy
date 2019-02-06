@@ -16,8 +16,6 @@ public class MessageTaskServiceImpl implements MessageTaskService {
                 controlService.execute(i);
             }
         }
-        //Just for check, we don't need this method with cycle, but with other implementation it can be useful
-        controlService.clear();
     }
 }
 

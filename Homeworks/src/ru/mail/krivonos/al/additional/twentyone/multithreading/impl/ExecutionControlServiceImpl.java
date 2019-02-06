@@ -72,9 +72,12 @@ public class ExecutionControlServiceImpl implements ExecutionControlService {
 
     @Override
     public void clear() {
-        for (Map.Entry<Integer, ExecutionControl> controlEntry : executables.entrySet()) {
-            ExecutionControl executionControl = controlEntry.getValue();
-            executionControl.unlock();
+        synchronized (this) {
+            for (Map.Entry<Integer, ExecutionControl> controlEntry : executables.entrySet()) {
+                ExecutionControl executionControl = controlEntry.getValue();
+                executionControl.unlock();
+                this.notifyAll();
+            }
         }
         executables.clear();
     }

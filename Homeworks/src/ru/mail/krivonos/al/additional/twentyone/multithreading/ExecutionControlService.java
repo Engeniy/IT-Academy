@@ -8,5 +8,6 @@ public interface ExecutionControlService {
 
     boolean isReady(int threadAmount);
 
+    //We can use it in another implementation
     void clear();
 }
