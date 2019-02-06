@@ -27,15 +27,18 @@ public class ExecutionControlServiceImpl implements ExecutionControlService {
     @Override
     public void execute(int id) {
         synchronized (this) {
-            ExecutionControl executionControl = executables.get(id);
-            executionControl.unlock();
-            this.notifyAll();
-            while (!executionControl.finished()) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                    throw new RuntimeException(e);
+            if (executables.containsKey(id)) {
+                ExecutionControl executionControl = executables.get(id);
+                executionControl.unlock();
+                this.notifyAll();
+                while (!executionControl.finished()) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        System.out.println(e.getMessage());
+                        throw new RuntimeException(e);
+                    }
+                    executables.remove(id);
                 }
             }
         }
@@ -53,7 +56,7 @@ public class ExecutionControlServiceImpl implements ExecutionControlService {
                 }
             }
         }
-        return threadAmount == executables.size();
+        return true;
     }
 
     public static ExecutionControlService getInstance() {
@@ -69,6 +72,10 @@ public class ExecutionControlServiceImpl implements ExecutionControlService {
 
     @Override
     public void clear() {
+        for (Map.Entry<Integer, ExecutionControl> controlEntry : executables.entrySet()) {
+            ExecutionControl executionControl = controlEntry.getValue();
+            executionControl.unlock();
+        }
         executables.clear();
     }
 }
