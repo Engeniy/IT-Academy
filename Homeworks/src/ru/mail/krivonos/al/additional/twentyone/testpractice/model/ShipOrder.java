@@ -7,11 +7,8 @@ import java.util.List;
 @XmlRootElement(name = "shiporder")
 public class ShipOrder {
 
-//    @XmlElement(name = "orderperson")
     private String orderPerson;
-//    @XmlElement(name = "shipto")
     private ShipDestination destination;
-//    @XmlElement(name = "item")
     private List<ShipItem> items;
 
     public String getOrderPerson() {

@@ -10,13 +10,13 @@ import java.io.IOException;
 
 public class ArrayWithMaxWritingTask extends Thread {
 
-    private final String fileName;
+    private final File file;
     private int arraySize;
     private int range;
     private RandomService randomService = RandomServiceImpl.getInstance();
 
-    public ArrayWithMaxWritingTask(String fileName, int arraySize, int range) {
-        this.fileName = fileName;
+    public ArrayWithMaxWritingTask(File file, int arraySize, int range) {
+        this.file = file;
         this.arraySize = arraySize;
         this.range = range;
     }
@@ -24,17 +24,7 @@ public class ArrayWithMaxWritingTask extends Thread {
     @Override
     public void run() {
         int[] array = randomService.getArray(arraySize, range);
-        synchronized (fileName) {
-            File file = new File(fileName);
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
+        synchronized (file) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
                 int max = array[0];
                 for (int element : array) {

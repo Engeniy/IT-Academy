@@ -1,6 +1,6 @@
 package ru.mail.krivonos.al.additional.twentyone.testpractice;
 
-public interface WritingTaskService {
+public interface WritingReadingTaskService {
 
     void executeTasks(int tasksNumber, int arraySize, int range, String filePath);
 

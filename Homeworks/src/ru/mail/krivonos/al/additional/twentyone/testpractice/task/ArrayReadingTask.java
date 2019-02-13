@@ -8,36 +8,26 @@ import java.util.concurrent.Callable;
 
 public class ArrayReadingTask implements Callable<Integer> {
 
-    private final String fileName;
+    private final File file;
     private int startingLine;
     private int batchSize;
 
-    public ArrayReadingTask(String fileName, int startingLine, int batchSize) {
-        this.fileName = fileName;
+    public ArrayReadingTask(File file, int startingLine, int batchSize) {
+        this.file = file;
         this.startingLine = startingLine;
         this.batchSize = batchSize;
     }
 
     @Override
     public Integer call() {
-        synchronized (fileName) {
-            File file = new File(fileName);
-            if (!file.exists()) {
-                try {
-                    fileName.wait(1500);
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
+        synchronized (file) {
             int lineCounter = 0;
             int max = Integer.MIN_VALUE;
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 while (lineCounter < startingLine) {
                     String line = br.readLine();
                     if (line == null) {
-                        fileName.wait(1500);
+                        file.wait(1500);
                     } else {
                         lineCounter++;
                     }
@@ -45,7 +35,7 @@ public class ArrayReadingTask implements Callable<Integer> {
                 lineCounter = 0;
                 String line = br.readLine();
                 while (line == null) {
-                    fileName.wait(1500);
+                    file.wait(1500);
                     line = br.readLine();
                 }
                 while (lineCounter < batchSize) {

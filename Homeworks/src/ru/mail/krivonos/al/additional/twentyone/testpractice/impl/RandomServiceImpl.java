@@ -26,8 +26,9 @@ public class RandomServiceImpl implements RandomService {
     @Override
     public List<Integer> getList(int size, int range) {
         List<Integer> list = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            list.add(random.nextInt(2 * range + 1) - range);
+        int[] array = getArray(size, range);
+        for (int element : array) {
+            list.add(element);
         }
         return list;
     }

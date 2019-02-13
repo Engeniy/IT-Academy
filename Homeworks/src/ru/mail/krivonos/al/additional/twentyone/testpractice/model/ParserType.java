@@ -4,5 +4,6 @@ public enum ParserType {
 
     DOM,
     SAX,
-    JAXB
+    JAXB,
+    StAX
 }

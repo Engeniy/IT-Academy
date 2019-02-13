@@ -6,13 +6,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "shipto")
 public class ShipDestination {
 
-//    @XmlElement
     private String name;
-//    @XmlElement
     private String address;
-//    @XmlElement
     private String city;
-//    @XmlElement
     private String country;
 
     public String getName() {

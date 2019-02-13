@@ -17,12 +17,20 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -69,6 +77,55 @@ public class XMLServiceImpl implements XMLService {
             case JAXB:
                 useJAXBParser(targetFile);
                 break;
+            case StAX:
+                useStAXParser(targetFile);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported enum value!");
+        }
+    }
+
+    private void useStAXParser(File file) {
+        boolean titleEvent = false;
+        boolean priceEvent = false;
+
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+        try {
+            XMLEventReader eventReader = factory.createXMLEventReader(new FileReader(file));
+
+            while (eventReader.hasNext()) {
+                XMLEvent event = eventReader.nextEvent();
+
+                switch (event.getEventType()) {
+                    case XMLEvent.START_ELEMENT:
+                        StartElement startElement = event.asStartElement();
+                        String name = startElement.getName().getLocalPart();
+
+                        if (name.equals("title")) {
+                            titleEvent = true;
+                        }
+                        if (name.equals("price")) {
+                            priceEvent = true;
+                        }
+                        break;
+                    case XMLEvent.CHARACTERS:
+                        Characters characters = event.asCharacters();
+
+                        if (titleEvent) {
+                            System.out.println("Title: " + characters.getData());
+                            titleEvent = false;
+                        }
+                        if (priceEvent) {
+                            System.out.println("Price: " + characters.getData());
+                            priceEvent = false;
+                        }
+                        break;
+                }
+            }
+        } catch (XMLStreamException | FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -115,7 +172,7 @@ public class XMLServiceImpl implements XMLService {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     System.out.println("Title: " + element.getElementsByTagName("title")
-                    .item(0).getTextContent());
+                            .item(0).getTextContent());
                     System.out.println("Price: " + element.getElementsByTagName("price")
                             .item(0).getTextContent());
                 }

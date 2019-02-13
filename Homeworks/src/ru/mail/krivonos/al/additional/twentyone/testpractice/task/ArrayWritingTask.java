@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.List;
 
 public class ArrayWritingTask extends Thread {
-    private final String fileName;
+    private final File file;
     private int size;
     private int range;
     private RandomService randomService = RandomServiceImpl.getInstance();
 
-    public ArrayWritingTask(String fileName, int size, int range) {
-        this.fileName = fileName;
+    public ArrayWritingTask(File file, int size, int range) {
+        this.file = file;
         this.size = size;
         this.range = range;
     }
@@ -24,17 +24,7 @@ public class ArrayWritingTask extends Thread {
     @Override
     public void run() {
         List<Integer> list = randomService.getList(size, range);
-        synchronized (fileName) {
-            File file = new File(fileName);
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
+        synchronized (file) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
                 for (int element : list) {
                     bw.write(String.valueOf(element));
@@ -45,7 +35,7 @@ public class ArrayWritingTask extends Thread {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-            fileName.notifyAll();
+            file.notifyAll();
         }
     }
 }

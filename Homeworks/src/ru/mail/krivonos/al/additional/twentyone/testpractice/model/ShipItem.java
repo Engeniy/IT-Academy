@@ -7,13 +7,9 @@ import java.math.BigDecimal;
 @XmlRootElement(name = "item")
 public class ShipItem {
 
-//    @XmlElement
     private String title;
-//    @XmlElement
     private String note;
-//    @XmlElement
     private int quantity;
-//    @XmlElement
     private BigDecimal price;
 
     public String getTitle() {
