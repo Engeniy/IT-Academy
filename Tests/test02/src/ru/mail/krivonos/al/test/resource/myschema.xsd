@@ -18,8 +18,10 @@
                 <xs:element name="ProductName" type="xs:string"/>
                 <xs:element name="Quantity" type="xs:integer"/>
                 <xs:element name="USPrice" type="xs:decimal"/>
-                <xs:element name="Comment" type="xs:string"/>
-                <xs:element name="ShipDate" type="xs:date" minOccurs="0"/>
+                <xs:choice>
+                    <xs:element name="Comment" type="xs:string"/>
+                    <xs:element name="ShipDate" type="xs:date"/>
+                </xs:choice>
             </xs:sequence>
             <xs:attribute name="PartNumber" type="xs:string"/>
         </xs:complexType>
