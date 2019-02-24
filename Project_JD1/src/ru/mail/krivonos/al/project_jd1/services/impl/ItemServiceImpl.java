@@ -92,11 +92,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void multiplyPricesFromRange(BigDecimal rangeStart, BigDecimal rangeEnd, Double multiplier) {
+    public void multiplyPricesFromRange(BigDecimal rangeStart, BigDecimal rangeEnd, Double multiplier,
+                                        Integer pageNumber) {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                List<Item> items = itemRepository.findItemsInPriceRange(connection, rangeStart, rangeEnd);
+                List<Item> items = itemRepository.findItemsInPriceRange(connection, rangeStart, rangeEnd, pageNumber);
                 if (items != null) {
                     for (Item item : items) {
                         BigDecimal price = item.getPrice().multiply(BigDecimal.valueOf(multiplier));

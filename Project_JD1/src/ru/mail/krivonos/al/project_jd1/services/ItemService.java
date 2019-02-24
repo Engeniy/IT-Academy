@@ -14,5 +14,5 @@ public interface ItemService {
 
     void deleteItemsWithLessPrice(BigDecimal priceBorder);
 
-    void multiplyPricesFromRange(BigDecimal rangeStart, BigDecimal rangeEnd, Double multiplier);
+    void multiplyPricesFromRange(BigDecimal rangeStart, BigDecimal rangeEnd, Double multiplier, Integer pageNumber);
 }
