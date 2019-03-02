@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Items xmlns="https://www.it-academy.by"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="https://www.it-academy.by itemschema.xsd">
+    <Item uniqueNumber="564646464">
+        <name>TestItem</name>
+        <description>This is some test item</description>
+        <price>64.2</price>
+    </Item>
+</Items>
