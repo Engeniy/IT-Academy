@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Item
   description   TEXT                           NOT NULL,
   unique_number VARCHAR(63)                    NOT NULL,
   price         DECIMAL UNSIGNED               NOT NULL,
-  deleted       BOOLEAN                        NOT NULL,
+  deleted       BOOLEAN DEFAULT FALSE          NOT NULL,
   UNIQUE (unique_number)
 );
 CREATE TABLE IF NOT EXISTS `Order`

@@ -88,7 +88,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         String sql = "SELECT * FROM Item LIMIT ? OFFSET ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, LIMIT_VALUE);
-            preparedStatement.setInt(2, LIMIT_VALUE * pageNumber);
+            preparedStatement.setInt(2, (pageNumber -1) * LIMIT_VALUE);
             List<Item> items;
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 items = getItems(resultSet);

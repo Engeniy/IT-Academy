@@ -8,6 +8,10 @@ public class PropertiesVariables {
     public static final String DATABASE_PASSWORD = "database.password";
     public static final String DATABASE_SQLINIT = "database.sqlinit";
 
+    public static final String LOGIN_PAGE_PATH = "login.page.path";
+    public static final String ITEMS_PAGE_PATH = "items.page.path";
+    public static final String REGISTRATION_PAGE_PATH = "registration.page.path";
+
     private PropertiesVariables() {
     }
 }

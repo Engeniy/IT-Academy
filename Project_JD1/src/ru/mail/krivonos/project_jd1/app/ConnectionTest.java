@@ -25,7 +25,7 @@ public class ConnectionTest {
         DatabaseInitService databaseInitService = DatabaseInitServiceImpl.getInstance();
         databaseInitService.initDatabase();
         RandomService randomService = RandomServiceImpl.getInstance();
-        List<Item> items = randomService.getItemList(10, 30, 3000);
+        List<Item> items = randomService.getItemList(30, 30, 3000);
         ItemRepository itemRepository = ItemRepositoryImpl.getInstance();
         try (Connection connection = ConnectionServiceImpl.getInstance().getConnection()) {
             for (Item item : items) {
