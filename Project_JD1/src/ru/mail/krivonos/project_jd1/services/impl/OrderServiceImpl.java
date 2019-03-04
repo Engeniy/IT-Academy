@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class OrderServiceImpl implements OrderService {
@@ -45,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
             try {
                 connection.setAutoCommit(false);
                 Order order = CreatedOrderConverterImpl.getInstance().fromDTO(orderDTO);
+                order.setDateOfCreation(new Date());
                 orderRepository.add(connection, order);
                 connection.commit();
             } catch (SQLException | OrderRepositoryException e) {
@@ -59,12 +61,73 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void update(OrderForSaleDTO orderDTO) {
+    public Integer countPages() {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                Order order = OrderForSaleConverterImpl.getInstance().fromDTO(orderDTO);
-                orderRepository.updateState(connection, order);
+                Integer pagesNumber = orderRepository.countPages(connection);
+                connection.commit();
+                return pagesNumber;
+            } catch (SQLException | OrderRepositoryException e) {
+                System.out.println(e.getMessage());
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer countPagesForUser(Long id) {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                Integer pagesNumber = orderRepository.countPagesForUser(connection, id);
+                connection.commit();
+                return pagesNumber;
+            } catch (SQLException | OrderRepositoryException e) {
+                System.out.println(e.getMessage());
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer countPagesForState(String state) {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                OrderState orderState = OrderState.valueOf(state);
+                Integer pagesNumber = orderRepository.countPagesForState(connection, orderState);
+                connection.commit();
+                return pagesNumber;
+            } catch (SQLException | OrderRepositoryException e) {
+                System.out.println(e.getMessage());
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+    @Override
+    public void update(Long id, String newState) {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                OrderState state = OrderState.valueOf(newState);
+                orderRepository.updateState(connection, id, state);
                 connection.commit();
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());

@@ -17,6 +17,8 @@ public interface ItemService {
 
     List<ItemDTO> getAll(Integer pageNumber);
 
+    Integer countPages();
+
     void addItems(Collection<XMLItemDTO> collection);
 
     void deleteItemsWithLessPrice(BigDecimal priceBorder);

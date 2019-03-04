@@ -1,6 +1,5 @@
 package ru.mail.krivonos.project_jd1.services.model.order;
 
-import ru.mail.krivonos.project_jd1.repository.model.OrderState;
 import ru.mail.krivonos.project_jd1.services.model.item.ItemForOrderDTO;
 
 import java.math.BigDecimal;
@@ -14,7 +13,7 @@ public class OrderForCustomerDTO {
 
     private Integer quantity;
 
-    private OrderState state;
+    private String state;
 
     private BigDecimal sum;
 
@@ -42,11 +41,11 @@ public class OrderForCustomerDTO {
         this.quantity = quantity;
     }
 
-    public OrderState getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(OrderState state) {
+    public void setState(String state) {
         this.state = state;
     }
 

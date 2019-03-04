@@ -21,8 +21,7 @@ public class UserForOrderConverterImpl implements UserForOrderConverter {
     public User fromDTO(UserForOrderDTO userDTO) {
         User user = new User();
         user.setId(userDTO.getId());
-        user.setSurname(userDTO.getSurname());
-        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
         return user;
     }
 
@@ -30,8 +29,7 @@ public class UserForOrderConverterImpl implements UserForOrderConverter {
     public UserForOrderDTO toDTO(User user) {
         UserForOrderDTO userDTO = new UserForOrderDTO();
         userDTO.setId(user.getId());
-        userDTO.setSurname(user.getSurname());
-        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
         return userDTO;
     }
 }

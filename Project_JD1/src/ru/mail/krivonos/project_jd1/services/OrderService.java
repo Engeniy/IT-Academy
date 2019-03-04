@@ -10,7 +10,13 @@ public interface OrderService {
 
     void add(CreatedOrderDTO orderDTO);
 
-    void update(OrderForSaleDTO orderDTO);
+    Integer countPages();
+
+    Integer countPagesForUser(Long id);
+
+    Integer countPagesForState(String state);
+
+    void update(Long id, String newState);
 
     void delete(OrderForSaleDTO orderDTO);
 

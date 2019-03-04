@@ -11,7 +11,13 @@ public interface OrderRepository {
 
     void add(Connection connection, Order order) throws OrderRepositoryException;
 
-    void updateState(Connection connection, Order order) throws OrderRepositoryException;
+    Integer countPages(Connection connection) throws OrderRepositoryException;
+
+    Integer countPagesForUser(Connection connection, Long id) throws OrderRepositoryException;
+
+    Integer countPagesForState(Connection connection, OrderState state) throws OrderRepositoryException;
+
+    void updateState(Connection connection, Long id, OrderState state) throws OrderRepositoryException;
 
     void delete(Connection connection, Order order) throws OrderRepositoryException;
 

@@ -16,7 +16,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     private static OrderRepository instance;
 
-    private static final int LIMIT_VALUE = 10;
+    private static final int LIMIT_VALUE = 9;
 
     private OrderRepositoryImpl() {
     }
@@ -47,13 +47,80 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public void updateState(Connection connection, Order order) throws OrderRepositoryException {
-        String sql = "UPDATE `Order` SET state = ? WHERE user_id = ? AND item_id = ? AND created = ?";
+    public Integer countPages(Connection connection) throws OrderRepositoryException {
+        String sql = "SELECT COUNT(*) AS lines_number FROM `Order`";
+        int pagesNumber = 0;
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                if (resultSet.next()) {
+                    int lines_number = resultSet.getInt("lines_number");
+                    pagesNumber = lines_number / LIMIT_VALUE;
+                    if (lines_number % LIMIT_VALUE > 0) {
+                        pagesNumber += 1;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new OrderRepositoryException(e);
+        }
+        return pagesNumber;
+    }
+
+    @Override
+    public Integer countPagesForUser(Connection connection, Long id) throws OrderRepositoryException {
+        String sql = "SELECT COUNT(*) AS lines_number FROM `Order` WHERE user_id = ?";
+        int pagesNumber = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, order.getState().name());
-            preparedStatement.setLong(2, order.getUser().getId());
-            preparedStatement.setLong(3, order.getItem().getId());
-            preparedStatement.setTimestamp(4, new Timestamp(order.getDateOfCreation().getTime()));
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int lines_number = resultSet.getInt("lines_number");
+                    pagesNumber = lines_number / LIMIT_VALUE;
+                    if (lines_number % LIMIT_VALUE > 0) {
+                        pagesNumber += 1;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new OrderRepositoryException(e);
+        }
+        return pagesNumber;
+    }
+
+    @Override
+    public Integer countPagesForState(Connection connection, OrderState state) throws OrderRepositoryException {
+        String sql = "SELECT COUNT(*) AS lines_number FROM `Order` WHERE state = ?";
+        int pagesNumber = 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, state.name());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int lines_number = resultSet.getInt("lines_number");
+                    pagesNumber = lines_number / LIMIT_VALUE;
+                    if (lines_number % LIMIT_VALUE > 0) {
+                        pagesNumber += 1;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new OrderRepositoryException(e);
+        }
+        return pagesNumber;
+    }
+
+    @Override
+    public void updateState(Connection connection, Long id, OrderState state) throws OrderRepositoryException {
+        String sql = "UPDATE `Order` SET state = ? WHERE id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, state.name());
+            preparedStatement.setLong(2, id);
             int updated = preparedStatement.executeUpdate();
             System.out.println("-------- " + updated + " Order State Updated --------");
         } catch (SQLException e) {
@@ -84,7 +151,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.setInt(2, LIMIT_VALUE);
-            preparedStatement.setInt(3, pageNumber * LIMIT_VALUE);
+            preparedStatement.setInt(3, (pageNumber - 1) * LIMIT_VALUE);
             List<Order> orders;
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 orders = getOrdersForCustomer(resultSet);
@@ -100,12 +167,13 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public List<Order> findAll(Connection connection, Integer pageNumber) throws OrderRepositoryException {
-        String sql = "SELECT o.*, i.name AS item_name, i.price, u.id AS user_id, u.name AS user_name, u.surname " +
-                "FROM `Order` o JOIN Item i ON o.item_id = i.id " +
-                "JOIN User u ON o.id = u.id LIMIT ? OFFSET ?";
+        String sql = "SELECT o.*, i.name AS item_name, i.price, i.unique_number, u.id AS user_id, " +
+                "u.email AS user_email, u.name AS user_name, u.surname " +
+                "FROM `Order` o LEFT JOIN Item i ON o.item_id = i.id " +
+                "LEFT JOIN User u ON o.user_id = u.id LIMIT ? OFFSET ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, LIMIT_VALUE);
-            preparedStatement.setInt(2, pageNumber * LIMIT_VALUE);
+            preparedStatement.setInt(2, (pageNumber - 1) * LIMIT_VALUE);
             List<Order> orders;
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 orders = getOrdersForSale(resultSet);
@@ -121,13 +189,14 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public List<Order> findAllByOrderState(Connection connection, Integer pageNumber, OrderState orderState)
             throws OrderRepositoryException {
-        String sql = "SELECT o.*, i.name AS item_name, i.price, u.id AS user_id, u.name AS user_name, u.surname " +
+        String sql = "SELECT o.*, i.name AS item_name, i.price, i.unique_number, u.id AS user_id, " +
+                "u.email AS user_email, u.name AS user_name, u.surname " +
                 "FROM `Order` o JOIN Item i ON o.item_id = i.id " +
-                "JOIN User u ON o.id = u.id WHERE o.state = ? LIMIT ? OFFSET ?";
+                "JOIN User u ON o.user_id = u.id WHERE o.state = ? LIMIT ? OFFSET ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, LIMIT_VALUE);
-            preparedStatement.setInt(2, pageNumber * LIMIT_VALUE);
-            preparedStatement.setString(3, orderState.name());
+            preparedStatement.setString(1, orderState.name());
+            preparedStatement.setInt(2, LIMIT_VALUE);
+            preparedStatement.setInt(3, (pageNumber - 1) * LIMIT_VALUE);
             List<Order> orders;
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 orders = getOrdersForSale(resultSet);
@@ -151,8 +220,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                 order.setState(OrderState.valueOf(resultSet.getString("state")));
                 User user = new User();
                 user.setId(resultSet.getLong("user_id"));
-                user.setSurname(resultSet.getString("surname"));
-                user.setName(resultSet.getString("user_name"));
+                user.setEmail(resultSet.getString("user_email"));
                 order.setUser(user);
                 Item item = new Item();
                 item.setName(resultSet.getString("item_name"));

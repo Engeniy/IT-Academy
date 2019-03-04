@@ -28,7 +28,6 @@ public class UserRegistrationConverterImpl implements UserRegistrationConverter 
         user.setName(userRegistrationDTO.getName());
         user.setEmail(userRegistrationDTO.getEmail());
         user.setPassword(userRegistrationDTO.getPassword());
-        user.setRole(roleConverter.fromDTO(userRegistrationDTO.getRole()));
         return user;
     }
 

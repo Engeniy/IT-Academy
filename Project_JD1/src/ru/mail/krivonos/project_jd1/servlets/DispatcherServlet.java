@@ -1,12 +1,10 @@
 package ru.mail.krivonos.project_jd1.servlets;
 
-import ru.mail.krivonos.project_jd1.servlets.command.Command;
-import ru.mail.krivonos.project_jd1.servlets.command.ItemsCommand;
-import ru.mail.krivonos.project_jd1.servlets.command.LoginCommand;
-import ru.mail.krivonos.project_jd1.servlets.command.RegistrationCommand;
+import ru.mail.krivonos.project_jd1.servlets.command.*;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,10 +12,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@MultipartConfig
 public class DispatcherServlet extends HttpServlet {
 
     private static final Map<CommandEnum, Command> commands = new HashMap<>();
-
 
 
     @Override
@@ -26,6 +24,18 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.LOGIN, new LoginCommand());
         commands.put(CommandEnum.REGISTRATION, new RegistrationCommand());
         commands.put(CommandEnum.ITEMS, new ItemsCommand());
+        commands.put(CommandEnum.ORDER, new OrderCommand());
+        commands.put(CommandEnum.ORDERS, new OrdersCommand());
+        commands.put(CommandEnum.PROFILE, new ProfileCommand());
+        commands.put(CommandEnum.LOGOUT, new LogoutCommand());
+        commands.put(CommandEnum.CREATE_ITEM, new CreateItemCommand());
+        commands.put(CommandEnum.ADD_ITEM, new AddItemCommand());
+        commands.put(CommandEnum.DELETE_ITEM, new DeleteItemCommand());
+        commands.put(CommandEnum.UPLOAD, new UploadCommand());
+        commands.put(CommandEnum.UPLOAD_XML, new UploadXMLCommand());
+        commands.put(CommandEnum.UPDATE_STATE, new UpdateStateCommand());
+        commands.put(CommandEnum.FILTER_STATE, new FilterStateCommand());
+        commands.put(CommandEnum.PROFILE_UPDATE, new ProfileUpdateCommand());
     }
 
     @Override
@@ -46,6 +56,6 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
+        this.doPost(req, resp);
     }
 }

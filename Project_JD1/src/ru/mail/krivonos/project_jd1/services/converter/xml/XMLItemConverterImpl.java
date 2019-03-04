@@ -7,7 +7,7 @@ public class XMLItemConverterImpl implements XMLItemConverter {
 
     private static XMLItemConverter instance;
 
-    private XMLItemConverterImpl(){
+    private XMLItemConverterImpl() {
     }
 
     public static XMLItemConverter getInstance() {

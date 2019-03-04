@@ -8,45 +8,43 @@ import ru.mail.krivonos.project_jd1.services.impl.ProfileServiceImpl;
 import ru.mail.krivonos.project_jd1.services.impl.UserServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.ProfileDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserInfoDTO;
-import ru.mail.krivonos.project_jd1.services.model.user.UserRegistrationDTO;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class RegistrationCommand implements Command {
+public class ProfileUpdateCommand implements Command {
 
     private UserService userService = UserServiceImpl.getInstance();
 
     private ProfileService profileService = ProfileServiceImpl.getInstance();
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse resp) {
-        if (req.getParameter("state") != null) {
-            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.REGISTRATION_PAGE_PATH);
-        }
+    public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
-        userRegistrationDTO.setName(name);
-        userRegistrationDTO.setSurname(surname);
-        userRegistrationDTO.setEmail(email);
-        userRegistrationDTO.setPassword(password);
-        userService.add(userRegistrationDTO);
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.setName(name);
+        userInfoDTO.setSurname(surname);
+        userService.updateInfo(userInfoDTO);
 
         String address = req.getParameter("address");
         String telephone = req.getParameter("telephone");
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setEmail(email);
-        userInfoDTO.setName(name);
-        userInfoDTO.setSurname(surname);
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setUser(userInfoDTO);
         profileDTO.setAddress(address);
         profileDTO.setTelephone(telephone);
-        profileService.add(profileDTO);
-        return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
+        profileService.update(profileDTO);
 
+        String oldPassword = req.getParameter("old-password");
+        String newPassword = req.getParameter("new-password");
+        if (oldPassword != null && newPassword != null) {
+            userService.updatePassword(email, oldPassword, newPassword);
+        }
+
+        req.setAttribute("profile", profileDTO);
+        return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
     }
 }

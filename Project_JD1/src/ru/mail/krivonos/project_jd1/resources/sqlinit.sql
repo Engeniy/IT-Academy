@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS Item
   name          VARCHAR(31)                    NOT NULL,
   description   TEXT                           NOT NULL,
   unique_number VARCHAR(63)                    NOT NULL,
-  price         DECIMAL UNSIGNED               NOT NULL,
+  price         DECIMAL(30, 2) UNSIGNED        NOT NULL,
   deleted       BOOLEAN DEFAULT FALSE          NOT NULL,
   UNIQUE (unique_number)
 );
@@ -62,7 +62,7 @@ ALTER TABLE User
   ADD role_id BIGINT UNSIGNED NOT NULL,
   ADD FOREIGN KEY (role_id) REFERENCES Role (id);
 ALTER TABLE Profile
-  ADD user_id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+  ADD user_id BIGINT UNSIGNED NOT NULL,
   ADD FOREIGN KEY (user_id) REFERENCES User (id),
   ADD UNIQUE (user_id);
 ALTER TABLE `Order`
@@ -82,4 +82,8 @@ VALUES ((SELECT id FROM Role WHERE name = 'SALE_USER'),
         (SELECT id FROM Permission WHERE name = 'SALE_PERMISSION'));
 INSERT INTO User (email, surname, name, password, role_id)
 VALUES ('krivonos-al@mail.ru', 'Krivonos', 'Alex', '5518590a', (SELECT r.id FROM Role r WHERE r.name = 'SALE_USER'));
+INSERT INTO Profile (user_id, address, telephone)
+VALUES ((SELECT u.id
+         FROM User u
+         WHERE u.email = 'krivonos-al@mail.ru'), 'Pritytskogo 80 40', '+3757337351');
 

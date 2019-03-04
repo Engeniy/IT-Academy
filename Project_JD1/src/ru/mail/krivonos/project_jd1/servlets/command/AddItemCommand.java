@@ -12,34 +12,32 @@ import ru.mail.krivonos.project_jd1.servlets.model.Constants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 
-public class ItemsCommand implements Command {
+public class AddItemCommand implements Command {
 
     private ItemService itemService = ItemServiceImpl.getInstance();
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
-        String page = req.getParameter("page");
-        Integer pageNumber;
-        if (page != null) {
-            pageNumber = Integer.parseInt(page);
-            if (pageNumber == 0) {
-                pageNumber = 1;
-            }
-        } else {
-            pageNumber = 1;
-        }
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setName(req.getParameter("name"));
+        itemDTO.setDescription(req.getParameter("description"));
+        itemDTO.setUniqueNumber(req.getParameter("uniqueNumber"));
+        BigDecimal price = BigDecimal.valueOf(Double.parseDouble(req.getParameter("price")));
+        itemDTO.setPrice(price);
+        itemDTO.setId(0L);
+        itemService.add(itemDTO);
         HttpSession session = req.getSession();
         AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
         PermissionsEnum permission = authorizedUser.getRole().getPermissions().get(0);
-        List<ItemDTO> items = itemService.getAll(pageNumber);
+        List<ItemDTO> items = itemService.getAll(1);
         req.setAttribute("items", items);
         Integer pages = itemService.countPages();
         req.setAttribute("pages", pages);
         if (permission.equals(PermissionsEnum.CUSTOMER_PERMISSION)) {
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_PAGE_PATH);
         } else return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_FOR_SALE_PAGE_PATH);
-
     }
 }

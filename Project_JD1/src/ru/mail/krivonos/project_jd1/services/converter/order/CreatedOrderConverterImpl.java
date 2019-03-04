@@ -2,6 +2,7 @@ package ru.mail.krivonos.project_jd1.services.converter.order;
 
 import ru.mail.krivonos.project_jd1.repository.model.Item;
 import ru.mail.krivonos.project_jd1.repository.model.Order;
+import ru.mail.krivonos.project_jd1.repository.model.OrderState;
 import ru.mail.krivonos.project_jd1.repository.model.User;
 import ru.mail.krivonos.project_jd1.services.model.order.CreatedOrderDTO;
 
@@ -28,9 +29,8 @@ public class CreatedOrderConverterImpl implements CreatedOrderConverter {
         Item item = new Item();
         item.setId(orderDTO.getItemID());
         order.setItem(item);
-        order.setDateOfCreation(orderDTO.getDateOfCreation());
         order.setQuantity(orderDTO.getQuantity());
-        order.setState(orderDTO.getState());
+        order.setState(OrderState.NEW);
         return order;
     }
 

@@ -5,10 +5,7 @@ import ru.mail.krivonos.project_jd1.repository.exceptions.ItemRepositoryExceptio
 import ru.mail.krivonos.project_jd1.repository.model.Item;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     private static ItemRepository instance;
 
-    private static final int LIMIT_VALUE = 10;
+    private static final int LIMIT_VALUE = 9;
 
     private ItemRepositoryImpl() {
     }
@@ -85,10 +82,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> findAll(Connection connection, Integer pageNumber) throws ItemRepositoryException {
-        String sql = "SELECT * FROM Item LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM Item WHERE deleted = FALSE LIMIT ? OFFSET ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, LIMIT_VALUE);
-            preparedStatement.setInt(2, (pageNumber -1) * LIMIT_VALUE);
+            preparedStatement.setInt(2, (pageNumber - 1) * LIMIT_VALUE);
             List<Item> items;
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 items = getItems(resultSet);
@@ -100,6 +97,27 @@ public class ItemRepositoryImpl implements ItemRepository {
             e.printStackTrace();
             throw new ItemRepositoryException(e);
         }
+    }
+
+    @Override
+    public Integer countPages(Connection connection) throws ItemRepositoryException {
+        String sql = "SELECT COUNT(*) AS lines_number FROM Item";
+        int pagesNumber = 0;
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                int lines_number = resultSet.getInt("lines_number");
+                pagesNumber = lines_number / LIMIT_VALUE;
+                if (lines_number % LIMIT_VALUE > 0) {
+                    pagesNumber += 1;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new ItemRepositoryException(e);
+        }
+        return pagesNumber;
     }
 
     @Override

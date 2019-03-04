@@ -5,6 +5,9 @@ import ru.mail.krivonos.project_jd1.repository.connection.ConnectionService;
 import ru.mail.krivonos.project_jd1.repository.connection.ConnectionServiceImpl;
 import ru.mail.krivonos.project_jd1.repository.exceptions.UserRepositoryException;
 import ru.mail.krivonos.project_jd1.repository.impl.UserRepositoryImpl;
+import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
+import ru.mail.krivonos.project_jd1.repository.model.Role;
+import ru.mail.krivonos.project_jd1.repository.model.RolesEnum;
 import ru.mail.krivonos.project_jd1.repository.model.User;
 import ru.mail.krivonos.project_jd1.services.UserService;
 import ru.mail.krivonos.project_jd1.services.converter.user.AuthorizedUserConverterImpl;
@@ -17,6 +20,8 @@ import ru.mail.krivonos.project_jd1.services.model.user.UserRegistrationDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
@@ -42,6 +47,12 @@ public class UserServiceImpl implements UserService {
             try {
                 connection.setAutoCommit(false);
                 User user = UserRegistrationConverterImpl.getInstance().fromDTO(userRegistrationDTO);
+                Role role = new Role();
+                role.setName(RolesEnum.CUSTOMER_USER);
+                List<PermissionsEnum> permissions = new ArrayList<>();
+                permissions.add(PermissionsEnum.CUSTOMER_PERMISSION);
+                role.setPermissions(permissions);
+                user.setRole(role);
                 userRepository.add(connection, user);
                 connection.commit();
             } catch (SQLException | UserRepositoryException e) {
@@ -93,11 +104,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(Long userID, String password) {
+    public void updatePassword(String email, String oldPassword, String newPassword) {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                userRepository.updatePassword(connection, userID, password);
+                userRepository.updatePassword(connection, email, oldPassword, newPassword);
                 connection.commit();
             } catch (SQLException | UserRepositoryException e) {
                 System.out.println(e.getMessage());

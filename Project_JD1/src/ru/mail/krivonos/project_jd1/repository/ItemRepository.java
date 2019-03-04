@@ -17,6 +17,8 @@ public interface ItemRepository {
 
     List<Item> findAll(Connection connection, Integer pageNumber) throws ItemRepositoryException;
 
+    Integer countPages(Connection connection) throws ItemRepositoryException;
+
     List<Item> findItemsInPriceRange(Connection connection, BigDecimal rangeStart, BigDecimal rangeEnd,
                                      Integer pageNumber) throws ItemRepositoryException;
 

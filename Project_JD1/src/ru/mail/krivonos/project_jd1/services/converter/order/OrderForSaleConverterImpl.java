@@ -1,6 +1,7 @@
 package ru.mail.krivonos.project_jd1.services.converter.order;
 
 import ru.mail.krivonos.project_jd1.repository.model.Order;
+import ru.mail.krivonos.project_jd1.repository.model.OrderState;
 import ru.mail.krivonos.project_jd1.services.converter.item.ItemForOrderConverter;
 import ru.mail.krivonos.project_jd1.services.converter.item.ItemForOrderConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.user.UserForOrderConverter;
@@ -35,7 +36,7 @@ public class OrderForSaleConverterImpl implements OrderForSaleConverter {
         order.setItem(itemForOrderConverter.fromDTO(orderForSaleDTO.getItem()));
         order.setDateOfCreation(orderForSaleDTO.getDateOfCreation());
         order.setQuantity(orderForSaleDTO.getQuantity());
-        order.setState(orderForSaleDTO.getState());
+        order.setState(OrderState.valueOf(orderForSaleDTO.getState()));
         return order;
     }
 
@@ -47,7 +48,7 @@ public class OrderForSaleConverterImpl implements OrderForSaleConverter {
         orderForSaleDTO.setItem(itemForOrderConverter.toDTO(order.getItem()));
         orderForSaleDTO.setDateOfCreation(order.getDateOfCreation());
         orderForSaleDTO.setQuantity(order.getQuantity());
-        orderForSaleDTO.setState(order.getState());
+        orderForSaleDTO.setState(order.getState().name());
         BigDecimal itemPrice = order.getItem().getPrice();
         Integer itemQuantity = order.getQuantity();
         orderForSaleDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));

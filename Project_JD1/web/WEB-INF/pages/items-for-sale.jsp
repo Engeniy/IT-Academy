@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: alex
-  Date: 03/03/19
-  Time: 14:48
+  Date: 04/03/19
+  Time: 10:41
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -17,10 +17,15 @@
 </head>
 <body>
 <%@include file="header.html" %>
+<ul class="menu-main">
+    <li><a href="${pageContext.request.contextPath}/dispatcher?command=create_item">Create Item</a></li>
+    <li><a href="${pageContext.request.contextPath}/dispatcher?command=upload">Upload Items</a></li>
+
+</ul>
 <div class="grid">
     <c:forEach items="${items}" var="item">
         <div class="product">
-            <form method="post" action="${pageContext.request.contextPath}/dispatcher?command=order">
+            <form method="post" action="${pageContext.request.contextPath}/dispatcher?command=delete_item">
                 <label>
                     <input name="item_id" value="${item.id}" hidden>
                 </label>
@@ -28,8 +33,7 @@
                 <p class="product-desc">Description: ${item.description}</p>
                 <p class="product-desc">Unique number: ${item.uniqueNumber}</p>
                 <p class="product-price">Price: ${item.price}</p>
-                <input name="quantity" type="number" min="0" placeholder="Quantity" required/>
-                <button>Order</button>
+                <button>Delete</button>
             </form>
         </div>
     </c:forEach>

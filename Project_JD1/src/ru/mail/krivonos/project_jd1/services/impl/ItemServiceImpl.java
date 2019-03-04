@@ -123,6 +123,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Integer countPages() {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                Integer pagesNumber = itemRepository.countPages(connection);
+                connection.commit();
+                return pagesNumber;
+            } catch (SQLException | ItemRepositoryException e) {
+                System.out.println(e.getMessage());
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+    @Override
     public void addItems(Collection<XMLItemDTO> collection) {
         try (Connection connection = connectionService.getConnection()) {
             try {
@@ -132,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
                     Item item = XMLItemConverterImpl.getInstance().fromDTO(itemDTO);
                     items.add(item);
                 }
-               itemRepository.addItems(connection, items);
+                itemRepository.addItems(connection, items);
                 connection.commit();
             } catch (SQLException | ItemRepositoryException e) {
                 System.out.println(e.getMessage());

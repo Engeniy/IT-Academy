@@ -13,7 +13,7 @@ public interface UserRepository {
 
     void updateEmail(Connection connection, Long id, String email) throws UserRepositoryException;
 
-    void updatePassword(Connection connection, Long id, String password) throws UserRepositoryException;
+    void updatePassword(Connection connection, String email, String oldPassword, String newPassword) throws UserRepositoryException;
 
     void deleteByID(Connection connection, Long id) throws UserRepositoryException;
 

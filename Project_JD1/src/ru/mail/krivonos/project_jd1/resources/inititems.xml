@@ -2,9 +2,19 @@
 <Items xmlns="https://www.it-academy.by"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="https://www.it-academy.by itemschema.xsd">
-    <Item uniqueNumber="564646464">
-        <name>TestItem</name>
+    <Item uniqueNumber="979">
+        <name>Hululu</name>
         <description>This is some test item</description>
         <price>64.2</price>
+    </Item>
+    <Item uniqueNumber="234324">
+        <name>TeLMAtem</name>
+        <description>This is some test item</description>
+        <price>64.2</price>
+    </Item>
+    <Item uniqueNumber="4346757">
+        <name>Hola</name>
+        <description>This is some test item</description>
+        <price>6678.2</price>
     </Item>
 </Items>

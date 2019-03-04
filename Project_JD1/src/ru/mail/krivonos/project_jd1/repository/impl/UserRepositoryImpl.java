@@ -30,13 +30,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void add(Connection connection, User user) throws UserRepositoryException {
-        String sql = "INSERT INTO User (email, surname, name, password, role_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO User (email, surname, name, password, role_id) VALUES (?, ?, ?, ?, (SELECT r.id FROM Role r WHERE r.name = ?))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getSurname());
             preparedStatement.setString(3, user.getName());
             preparedStatement.setString(4, user.getPassword());
-            preparedStatement.setLong(5, user.getRole().getId());
+            preparedStatement.setString(5, user.getRole().getName().name());
             int added = preparedStatement.executeUpdate();
             System.out.println("-------- " + added + " User Added --------");
         } catch (SQLException e) {
@@ -48,11 +48,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void updateInfo(Connection connection, User user) throws UserRepositoryException {
-        String sql = "UPDATE User SET surname = ?, name = ? WHERE id = ?";
+        String sql = "UPDATE User SET surname = ?, name = ? WHERE email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, user.getSurname());
             preparedStatement.setString(2, user.getName());
-            preparedStatement.setLong(3, user.getId());
+            preparedStatement.setString(3, user.getEmail());
             int updated = preparedStatement.executeUpdate();
             System.out.println("-------- " + updated + " User Info Updated --------");
         } catch (SQLException e) {
@@ -78,11 +78,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updatePassword(Connection connection, Long id, String password) throws UserRepositoryException {
-        String sql = "UPDATE User SET password = ? WHERE id = ?";
+    public void updatePassword(Connection connection, String email, String oldPassword, String newPassword) throws UserRepositoryException {
+        String sql = "UPDATE User SET password = ? WHERE email = ? AND password = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, password);
-            preparedStatement.setLong(2, id);
+            preparedStatement.setString(1, newPassword);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, oldPassword);
             int updated = preparedStatement.executeUpdate();
             System.out.println("-------- " + updated + " User Password Updated --------");
         } catch (SQLException e) {

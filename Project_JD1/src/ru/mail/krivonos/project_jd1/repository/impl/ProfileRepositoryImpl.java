@@ -26,9 +26,10 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public void add(Connection connection, Profile profile) throws ProfileRepositoryException {
-        String sql = "INSERT INTO Profile (user_id, address, telephone) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Profile (user_id, address, telephone) VALUES " +
+                "((SELECT u.id FROM User u WHERE u.email = ?), ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, profile.getUser().getId());
+            preparedStatement.setString(1, profile.getUser().getEmail());
             preparedStatement.setString(2, profile.getAddress());
             preparedStatement.setString(3, profile.getTelephone());
             int added = preparedStatement.executeUpdate();
@@ -42,11 +43,12 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public void update(Connection connection, Profile profile) throws ProfileRepositoryException {
-        String sql = "UPDATE Profile SET address = ?, telephone = ? WHERE user_id = ?";
+        String sql = "UPDATE Profile SET address = ?, telephone = ? WHERE user_id = " +
+                "(SELECT u.id FROM User u WHERE email = ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, profile.getAddress());
             preparedStatement.setString(2, profile.getTelephone());
-            preparedStatement.setLong(3, profile.getUser().getId());
+            preparedStatement.setString(3, profile.getUser().getEmail());
             int updated = preparedStatement.executeUpdate();
             System.out.println("-------- " + updated + " Profile Updated --------");
         } catch (SQLException e) {
@@ -58,7 +60,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public Profile findByUserID(Connection connection, Long userID) throws ProfileRepositoryException {
-        String sql = "SELECT * FROM Profile WHERE user_id = ?";
+        String sql = "SELECT *, u.name, u.surname, u.email FROM Profile " +
+                "JOIN User u ON u.id = user_id WHERE user_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, userID);
             try (ResultSet resultSet = preparedStatement.executeQuery();) {
@@ -77,8 +80,10 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         try {
             if (resultSet.next()) {
                 User user = new User();
-                Long userID = resultSet.getLong("user_id");
-                user.setId(userID);
+                user.setId(resultSet.getLong("user_id"));
+                user.setName(resultSet.getString("name"));
+                user.setSurname(resultSet.getString("surname"));
+                user.setEmail(resultSet.getString("email"));
                 profile.setUser(user);
                 String address = resultSet.getString("address");
                 profile.setAddress(address);
