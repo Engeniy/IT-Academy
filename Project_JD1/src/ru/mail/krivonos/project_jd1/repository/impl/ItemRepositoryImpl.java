@@ -67,6 +67,26 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public Item findByUniqueNumber(Connection connection, String uniqueNumber) throws ItemRepositoryException {
+        String sql = "SELECT id FROM Item WHERE unique_number = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, uniqueNumber);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Item item = new Item();
+                    item.setId(resultSet.getLong("id"));
+                    return item;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new ItemRepositoryException(e);
+        }
+        return null;
+    }
+
+    @Override
     public void deleteItemsWithLessPrice(Connection connection, BigDecimal priceBorder) throws ItemRepositoryException {
         String sql = "UPDATE Item SET deleted = TRUE WHERE price < ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {

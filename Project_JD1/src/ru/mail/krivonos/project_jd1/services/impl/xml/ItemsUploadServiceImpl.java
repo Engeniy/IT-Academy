@@ -1,10 +1,11 @@
 package ru.mail.krivonos.project_jd1.services.impl.xml;
 
 import org.xml.sax.SAXException;
-import ru.mail.krivonos.project_jd1.services.JAXBParserService;
+import ru.mail.krivonos.project_jd1.services.ItemsUploadService;
 import ru.mail.krivonos.project_jd1.services.model.xml.XMLItemDTO;
 import ru.mail.krivonos.project_jd1.services.model.xml.XMLItemsDTO;
 
+import javax.servlet.http.Part;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,22 +15,41 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Paths;
 import java.util.List;
 
-public class JAXBParserServiceImpl implements JAXBParserService {
+public class ItemsUploadServiceImpl implements ItemsUploadService {
 
-    private static JAXBParserService instance;
+    private static ItemsUploadService instance;
 
-    private JAXBParserServiceImpl() {
+    private ItemsUploadServiceImpl() {
     }
 
-    public static JAXBParserService getInstance() {
+    public static ItemsUploadService getInstance() {
         if (instance == null) {
-            instance = new JAXBParserServiceImpl();
+            instance = new ItemsUploadServiceImpl();
         }
         return instance;
+    }
+
+    @Override
+    public File uploadFile(Part part, String tempFileName) throws IOException {
+        String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+        File tempFile = new File(tempFileName);
+        if (!tempFile.exists()) {
+           if (!tempFile.createNewFile()) {
+               throw new RuntimeException("Can't create temp file!");
+           }
+        }
+        try (InputStream fileContent = part.getInputStream(); OutputStream os = new FileOutputStream(tempFile)) {
+            int input;
+            while ((input = fileContent.read()) != -1) {
+                os.write(input);
+            }
+            os.flush();
+        }
+        return tempFile;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package ru.mail.krivonos.project_jd1.services.model.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
@@ -38,7 +37,7 @@ public class XMLItemDTO {
         return uniqueNumber;
     }
 
-    @XmlAttribute
+    @XmlElement
     public void setUniqueNumber(String uniqueNumber) {
         this.uniqueNumber = uniqueNumber;
     }

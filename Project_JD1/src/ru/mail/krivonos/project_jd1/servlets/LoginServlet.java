@@ -28,6 +28,5 @@ public class LoginServlet extends HttpServlet {
         userLoginDTO.setEmail(login);
         userLoginDTO.setPassword(password);
         AuthorizedUserDTO authorizedUserDTO = userService.loginUser(userLoginDTO);
-        System.out.println(authorizedUserDTO.getRole().getName().name());
     }
 }

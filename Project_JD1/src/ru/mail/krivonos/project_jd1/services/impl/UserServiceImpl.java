@@ -13,6 +13,7 @@ import ru.mail.krivonos.project_jd1.services.UserService;
 import ru.mail.krivonos.project_jd1.services.converter.user.AuthorizedUserConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.user.UserInfoConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.user.UserRegistrationConverterImpl;
+import ru.mail.krivonos.project_jd1.services.exceptions.RegistrationException;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserInfoDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserLoginDTO;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
+
+    private static final String DEFAUL_ROLE = "CUSTOMER_USER";
 
     private static UserService instance;
 
@@ -42,13 +45,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(UserRegistrationDTO userRegistrationDTO) {
+    public void add(UserRegistrationDTO userRegistrationDTO) throws RegistrationException {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 User user = UserRegistrationConverterImpl.getInstance().fromDTO(userRegistrationDTO);
+                User userByEmail = userRepository.findUserByEmail(connection, user.getEmail());
+                if (userByEmail != null) {
+                    throw new RegistrationException();
+                }
                 Role role = new Role();
-                role.setName(RolesEnum.CUSTOMER_USER);
+                role.setName(DEFAUL_ROLE);
                 List<PermissionsEnum> permissions = new ArrayList<>();
                 permissions.add(PermissionsEnum.CUSTOMER_PERMISSION);
                 role.setPermissions(permissions);
@@ -190,6 +197,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean validatePassword(String passwordInput, String savedPassword) {
-        return passwordInput.equals(savedPassword);
+        return passwordInput.trim().equals(savedPassword);
     }
 }

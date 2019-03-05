@@ -1,31 +1,27 @@
 package ru.mail.krivonos.project_jd1.servlets.command;
 
-import ru.mail.krivonos.project_jd1.config.ConfigurationManagerImpl;
-import ru.mail.krivonos.project_jd1.config.PropertiesVariables;
-import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
 import ru.mail.krivonos.project_jd1.services.ItemService;
-import ru.mail.krivonos.project_jd1.services.JAXBParserService;
+import ru.mail.krivonos.project_jd1.services.ItemsUploadService;
+import ru.mail.krivonos.project_jd1.services.exceptions.ItemUniqueNumberException;
 import ru.mail.krivonos.project_jd1.services.impl.ItemServiceImpl;
-import ru.mail.krivonos.project_jd1.services.impl.xml.JAXBParserServiceImpl;
-import ru.mail.krivonos.project_jd1.services.model.item.ItemDTO;
-import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
+import ru.mail.krivonos.project_jd1.services.impl.xml.ItemsUploadServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.xml.XMLItemDTO;
+import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
 import ru.mail.krivonos.project_jd1.servlets.model.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import java.io.*;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class UploadXMLCommand implements Command {
 
     private ItemService itemService = ItemServiceImpl.getInstance();
 
-    private JAXBParserService jaxbParserService = JAXBParserServiceImpl.getInstance();
+    private ItemsUploadService itemsUploadService = ItemsUploadServiceImpl.getInstance();
 
     private static final String UPLOAD_DIR =
             "/home/alex/Documents/IT-Academy/Project_JD1/web/resources/upload/temp.xml";
@@ -35,32 +31,25 @@ public class UploadXMLCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String error = null;
         Part filePart = req.getPart("file");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        try (InputStream fileContent = filePart.getInputStream(); OutputStream os = new FileOutputStream(UPLOAD_DIR)) {
-            int input;
-            while ((input = fileContent.read()) != -1) {
-                os.write(input);
-            }
-            os.flush();
-        }
+        File inputFile = itemsUploadService.uploadFile(filePart, UPLOAD_DIR);
         File schema = new File(XSD_PATH);
-        File inputFile = new File(UPLOAD_DIR);
-        if (jaxbParserService.validate(schema, inputFile)) {
-            List<XMLItemDTO> xmlItems = jaxbParserService.parse(inputFile);
-            itemService.addItems(xmlItems);
+        if (itemsUploadService.validate(schema, inputFile)) {
+            List<XMLItemDTO> xmlItems = itemsUploadService.parse(inputFile);
+            try {
+                itemService.addItems(xmlItems);
+            } catch (ItemUniqueNumberException e) {
+                resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
+                        Constants.ERROR_POSTFIX + "Adding_denied!One_of_the_items_has_the_same_unique_number!");
+                return null;
+            } finally {
+                inputFile.delete();
+            }
         }
-        inputFile.delete();
-        HttpSession session = req.getSession();
-        AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
-        PermissionsEnum permission = authorizedUser.getRole().getPermissions().get(0);
-        List<ItemDTO> items = itemService.getAll(1);
-        req.setAttribute("items", items);
-        Integer pages = itemService.countPages();
-        req.setAttribute("pages", pages);
-        if (permission.equals(PermissionsEnum.CUSTOMER_PERMISSION)) {
-            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_PAGE_PATH);
-        } else return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_FOR_SALE_PAGE_PATH);
+        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
+                Constants.MESSAGE_POSTFIX + "Items_added!");
+        return null;
     }
 
     private String extractFileName(Part part) {

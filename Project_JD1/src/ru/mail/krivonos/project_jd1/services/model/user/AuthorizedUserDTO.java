@@ -1,12 +1,13 @@
 package ru.mail.krivonos.project_jd1.services.model.user;
 
+import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
 import ru.mail.krivonos.project_jd1.services.model.RoleDTO;
 
 public class AuthorizedUserDTO {
 
     private Long id;
 
-    private RoleDTO role;
+    private PermissionsEnum permission;
 
     public Long getId() {
         return id;
@@ -16,11 +17,11 @@ public class AuthorizedUserDTO {
         this.id = id;
     }
 
-    public RoleDTO getRole() {
-        return role;
+    public PermissionsEnum getPermission() {
+        return permission;
     }
 
-    public void setRole(RoleDTO role) {
-        this.role = role;
+    public void setPermission(PermissionsEnum permission) {
+        this.permission = permission;
     }
 }

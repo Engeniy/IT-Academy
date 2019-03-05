@@ -1,5 +1,6 @@
 package ru.mail.krivonos.project_jd1.servlets;
 
+import ru.mail.krivonos.project_jd1.services.impl.DatabaseInitServiceImpl;
 import ru.mail.krivonos.project_jd1.servlets.command.*;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
 
@@ -34,8 +35,11 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.UPLOAD, new UploadCommand());
         commands.put(CommandEnum.UPLOAD_XML, new UploadXMLCommand());
         commands.put(CommandEnum.UPDATE_STATE, new UpdateStateCommand());
-        commands.put(CommandEnum.FILTER_STATE, new FilterStateCommand());
+        commands.put(CommandEnum.CHOOSE_STATE, new ChooseStateCommand());
         commands.put(CommandEnum.PROFILE_UPDATE, new ProfileUpdateCommand());
+        commands.put(CommandEnum.LOGIN_REDIRECT, new LoginRedirectCommand());
+        commands.put(CommandEnum.REGISTRATION_REDIRECT, new RegistrationRedirectCommand());
+        DatabaseInitServiceImpl.getInstance().initDatabase();
     }
 
     @Override

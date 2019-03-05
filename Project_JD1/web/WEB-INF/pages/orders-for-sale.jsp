@@ -17,7 +17,7 @@
 </head>
 <body>
 <%@include file="header.html" %>
-<form class="menu-main" method="post" action="${pageContext.request.contextPath}/dispatcher?command=filter_state">
+<form class="menu-main" method="post" action="${pageContext.request.contextPath}/dispatcher?command=choose_state">
     <select name="filter-state">
         <option value="ALL">ALL</option>
         <option value="NEW">NEW</option>
@@ -27,7 +27,16 @@
     </select>
     <button>Choose</button>
 </form>
-
+<c:if test="${not empty message}">
+    <div class="alert alert-success notification">
+        <c:out value="${message}"/>
+    </div>
+</c:if>
+<c:if test="${not empty error}">
+    <div class="alert alert-danger notification">
+        <c:out value="${error}"/>
+    </div>
+</c:if>
 <div class="grid-orders">
     <c:forEach items="${orders}" var="order">
         <div class="product">
@@ -53,9 +62,9 @@
         </div>
     </c:forEach>
 </div>
-<ul class="pagination" style="display: flex; justify-content: center; margin: 0 20px">
+<ul class="pagination, mypagination">
     <c:forEach begin="1" var="page" end="${pages}">
-        <li class="page-item" style="margin: 20px 20px; display: inline">
+        <li class="page-item, mypagination">
             <a class="page-link"
                href="${pageContext.request.contextPath}/dispatcher?command=orders&page=${page}">${page}</a>
         </li>

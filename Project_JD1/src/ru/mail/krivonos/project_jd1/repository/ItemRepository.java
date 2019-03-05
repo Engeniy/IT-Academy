@@ -13,6 +13,8 @@ public interface ItemRepository {
 
     void addItems(Connection connection, List<Item> items) throws ItemRepositoryException;
 
+    Item findByUniqueNumber(Connection connection, String uniqueNumber) throws ItemRepositoryException;
+
     void deleteItemsWithLessPrice(Connection connection, BigDecimal priceBorder) throws ItemRepositoryException;
 
     List<Item> findAll(Connection connection, Integer pageNumber) throws ItemRepositoryException;

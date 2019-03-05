@@ -11,6 +11,7 @@
     <title>Item Adding</title>
     <link href="${pageContext.request.contextPath}/resources/css/login.css" rel="stylesheet" type="text/css">
     <link href="${pageContext.request.contextPath}/resources/css/menu.css" rel="stylesheet" type="text/css">
+
 </head>
 <body>
 <%@include file="header.html" %>

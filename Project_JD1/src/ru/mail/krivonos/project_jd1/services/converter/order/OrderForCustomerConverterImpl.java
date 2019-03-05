@@ -41,9 +41,6 @@ public class OrderForCustomerConverterImpl implements OrderForCustomerConverter 
         orderForCustomerDTO.setDateOfCreation(order.getDateOfCreation());
         orderForCustomerDTO.setQuantity(order.getQuantity());
         orderForCustomerDTO.setState(order.getState().name());
-        BigDecimal itemPrice = order.getItem().getPrice();
-        Integer itemQuantity = order.getQuantity();
-        orderForCustomerDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));
         return orderForCustomerDTO;
     }
 }

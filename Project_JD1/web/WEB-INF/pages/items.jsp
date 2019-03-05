@@ -17,6 +17,16 @@
 </head>
 <body>
 <%@include file="header.html" %>
+<c:if test="${not empty message}">
+    <div class="alert alert-success">
+        <c:out value="${message}"/>
+    </div>
+</c:if>
+<c:if test="${not empty error}">
+    <div class="alert alert-danger">
+        <c:out value="${error}"/>
+    </div>
+</c:if>
 <div class="grid">
     <c:forEach items="${items}" var="item">
         <div class="product">
@@ -35,7 +45,7 @@
     </c:forEach>
 </div>
 
-<ul class="pagination" style="display: flex; justify-content: center; margin: 20px 20px;">
+<ul class="pagination, mypagination">
     <c:forEach begin="1" var="page" end="${pages}">
         <li class="page-item" style="margin: 0 20px; display: inline">
             <a class="page-link"

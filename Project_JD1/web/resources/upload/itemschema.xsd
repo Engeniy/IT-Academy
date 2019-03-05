@@ -17,8 +17,8 @@
                 <xs:element name="name" type="xs:string"/>
                 <xs:element name="description" type="xs:string"/>
                 <xs:element name="price" type="xs:decimal"/>
+                <xs:element name="uniqueNumber" type="xs:string"/>
             </xs:sequence>
-            <xs:attribute name="uniqueNumber" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

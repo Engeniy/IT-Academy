@@ -12,9 +12,16 @@
     <title>Profile</title>
     <link href="${pageContext.request.contextPath}/resources/css/login.css" rel="stylesheet" type="text/css">
     <link href="${pageContext.request.contextPath}/resources/css/menu.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/resources/css/itempage.css" rel="stylesheet" type="text/css">
+    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <%@include file="header.html" %>
+<c:if test="${not empty error}">
+    <div class="alert alert-danger">
+        <c:out value="${error}"/>
+    </div>
+</c:if>
 <div class="login-page">
     <div class="form">
         <form class="login-form" method="post"

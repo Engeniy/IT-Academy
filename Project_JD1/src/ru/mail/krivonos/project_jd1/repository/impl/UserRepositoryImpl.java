@@ -36,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setString(2, user.getSurname());
             preparedStatement.setString(3, user.getName());
             preparedStatement.setString(4, user.getPassword());
-            preparedStatement.setString(5, user.getRole().getName().name());
+            preparedStatement.setString(5, user.getRole().getName());
             int added = preparedStatement.executeUpdate();
             System.out.println("-------- " + added + " User Added --------");
         } catch (SQLException e) {
@@ -114,11 +114,10 @@ public class UserRepositoryImpl implements UserRepository {
                 "ON r.id = rp.role_id JOIN Permission p ON rp.permission_id = p.id WHERE u.email = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, email);
-            User user;
             try (ResultSet resultSet = preparedStatement.executeQuery();) {
-                user = getUserForLogin(resultSet);
+                User user = getUserForLogin(resultSet);
+                return user;
             }
-            return user;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -160,25 +159,26 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private User getUserForLogin(ResultSet resultSet) throws UserRepositoryException {
-        User user = new User();
         try {
             if (resultSet.next()) {
+                User user = new User();
                 user.setId(resultSet.getLong("id"));
                 user.setPassword(resultSet.getString("password"));
                 Role role = new Role();
                 role.setId(resultSet.getLong("role_id"));
-                role.setName(RolesEnum.valueOf(resultSet.getString("role_name")));
+                role.setName(resultSet.getString("role_name"));
                 PermissionsEnum permission = PermissionsEnum.valueOf(resultSet.getString("permission_name"));
                 List<PermissionsEnum> permissionsList = new ArrayList<>();
                 permissionsList.add(permission);
                 role.setPermissions(permissionsList);
                 user.setRole(role);
+                return user;
             }
-            return user;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
             throw new UserRepositoryException(e);
         }
+        return null;
     }
 }

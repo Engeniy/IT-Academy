@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Permission
 CREATE TABLE IF NOT EXISTS Role
 (
   id   BIGINT UNSIGNED AUTO_INCREMENT      NOT NULL PRIMARY KEY,
-  name ENUM ('CUSTOMER_USER', 'SALE_USER') NOT NULL
+  name VARCHAR(31) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS Role_Permission
 (
@@ -85,5 +85,12 @@ VALUES ('krivonos-al@mail.ru', 'Krivonos', 'Alex', '5518590a', (SELECT r.id FROM
 INSERT INTO Profile (user_id, address, telephone)
 VALUES ((SELECT u.id
          FROM User u
-         WHERE u.email = 'krivonos-al@mail.ru'), 'Pritytskogo 80 40', '+3757337351');
+         WHERE u.email = 'krivonos-al@mail.ru'), 'Pritytskogo 80 40', '+375447337351');
+INSERT INTO User (email, surname, name, password, role_id)
+VALUES ('santiar.azalis@gmail.com', 'Santiar', 'Azalis', '5518590a', (SELECT r.id FROM Role r
+                                                                      WHERE r.name = 'CUSTOMER_USER'));
+INSERT INTO Profile (user_id, address, telephone)
+VALUES ((SELECT u.id
+         FROM User u
+         WHERE u.email = 'santiar.azalis@gmail.com'), 'Altian 50 9', '+375295518590');
 

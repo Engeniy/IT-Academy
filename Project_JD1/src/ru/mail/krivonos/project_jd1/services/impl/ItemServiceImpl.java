@@ -10,6 +10,7 @@ import ru.mail.krivonos.project_jd1.services.ItemService;
 import ru.mail.krivonos.project_jd1.services.converter.item.ItemConverter;
 import ru.mail.krivonos.project_jd1.services.converter.item.ItemConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.xml.XMLItemConverterImpl;
+import ru.mail.krivonos.project_jd1.services.exceptions.ItemUniqueNumberException;
 import ru.mail.krivonos.project_jd1.services.model.item.ItemDTO;
 import ru.mail.krivonos.project_jd1.services.model.xml.XMLItemDTO;
 
@@ -42,13 +43,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void add(ItemDTO itemDTO) {
+    public void add(ItemDTO itemDTO) throws ItemUniqueNumberException {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 Item item = ItemConverterImpl.getInstance().fromDTO(itemDTO);
+                Item byUniqueNumber = itemRepository.findByUniqueNumber(connection, item.getUniqueNumber());
+                if (byUniqueNumber != null) {
+                    throw new ItemUniqueNumberException();
+                }
                 itemRepository.add(connection, item);
                 connection.commit();
+                System.out.println("SERVICE");
             } catch (SQLException | ItemRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -143,13 +149,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void addItems(Collection<XMLItemDTO> collection) {
+    public void addItems(Collection<XMLItemDTO> collection) throws ItemUniqueNumberException {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 List<Item> items = new ArrayList<>();
                 for (XMLItemDTO itemDTO : collection) {
                     Item item = XMLItemConverterImpl.getInstance().fromDTO(itemDTO);
+                    Item byUniqueNumber = itemRepository.findByUniqueNumber(connection, item.getUniqueNumber());
+                    if (byUniqueNumber != null) {
+                        throw new ItemUniqueNumberException();
+                    }
                     items.add(item);
                 }
                 itemRepository.addItems(connection, items);

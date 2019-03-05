@@ -3,7 +3,9 @@ package ru.mail.krivonos.project_jd1.servlets.model;
 public enum CommandEnum {
 
     LOGIN,
+    LOGIN_REDIRECT,
     REGISTRATION,
+    REGISTRATION_REDIRECT,
     ITEMS,
     DELETE_ITEM,
     CREATE_ITEM,
@@ -13,7 +15,7 @@ public enum CommandEnum {
     ORDERS,
     ORDER,
     UPDATE_STATE,
-    FILTER_STATE,
+    CHOOSE_STATE,
     PROFILE,
     PROFILE_UPDATE,
     LOGOUT;

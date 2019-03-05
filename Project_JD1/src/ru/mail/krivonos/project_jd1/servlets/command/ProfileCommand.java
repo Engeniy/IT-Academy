@@ -22,7 +22,12 @@ public class ProfileCommand implements Command {
         HttpSession session = req.getSession();
         AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
         ProfileDTO profileDTO = profileService.getByUserID(authorizedUser.getId());
-        req.setAttribute("profile", profileDTO);
-        return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
+        if (profileDTO != null) {
+            req.setAttribute("profile", profileDTO);
+            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
+        } else {
+            session.removeAttribute(Constants.SESSION_USER_KEY);
+            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
+        }
     }
 }

@@ -43,7 +43,6 @@ public class ProfileUpdateCommand implements Command {
         if (oldPassword != null && newPassword != null) {
             userService.updatePassword(email, oldPassword, newPassword);
         }
-
         req.setAttribute("profile", profileDTO);
         return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
     }

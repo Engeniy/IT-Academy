@@ -9,7 +9,7 @@ public class RoleDTO {
 
     private Long id;
 
-    private RolesEnum name;
+    private String name;
 
     private List<PermissionsEnum> permissions;
 
@@ -21,11 +21,11 @@ public class RoleDTO {
         this.id = id;
     }
 
-    public RolesEnum getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(RolesEnum name) {
+    public void setName(String name) {
         this.name = name;
     }
 

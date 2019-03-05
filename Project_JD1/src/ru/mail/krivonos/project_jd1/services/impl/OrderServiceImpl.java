@@ -15,6 +15,7 @@ import ru.mail.krivonos.project_jd1.services.model.order.CreatedOrderDTO;
 import ru.mail.krivonos.project_jd1.services.model.order.OrderForCustomerDTO;
 import ru.mail.krivonos.project_jd1.services.model.order.OrderForSaleDTO;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -242,6 +243,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderForSaleDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
             OrderForSaleDTO orderDTO = OrderForSaleConverterImpl.getInstance().toDTO(order);
+            BigDecimal itemPrice = order.getItem().getPrice();
+            Integer itemQuantity = order.getQuantity();
+            orderDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));
             orderDTOList.add(orderDTO);
         }
         return orderDTOList;
@@ -251,6 +255,9 @@ public class OrderServiceImpl implements OrderService {
         List<OrderForCustomerDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
             OrderForCustomerDTO orderDTO = OrderForCustomerConverterImpl.getInstance().toDTO(order);
+            BigDecimal itemPrice = order.getItem().getPrice();
+            Integer itemQuantity = order.getQuantity();
+            orderDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));
             orderDTOList.add(orderDTO);
         }
         return orderDTOList;

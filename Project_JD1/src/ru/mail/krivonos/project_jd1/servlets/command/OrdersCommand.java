@@ -21,6 +21,10 @@ public class OrdersCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
+        String message = req.getParameter("message");
+        if (message != null) {
+            req.setAttribute("message", message);
+        }
         String page = req.getParameter("page");
         Integer pageNumber;
         if (page != null) {
@@ -33,19 +37,35 @@ public class OrdersCommand implements Command {
         }
         HttpSession session = req.getSession();
         AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
-        PermissionsEnum permission = authorizedUser.getRole().getPermissions().get(0);
-        if (permission.equals(PermissionsEnum.CUSTOMER_PERMISSION)) {
-            List<OrderForCustomerDTO> orders = orderService.getAllForUser(authorizedUser.getId(), pageNumber);
-            req.setAttribute("orders", orders);
-            Integer pages = orderService.countPagesForUser(authorizedUser.getId());
-            req.setAttribute("pages", pages);
-            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ORDERS_PAGE_PATH);
-        } else {
-            List<OrderForSaleDTO> orders = orderService.getAll(pageNumber);
-            req.setAttribute("orders", orders);
-            Integer pages = orderService.countPages();
-            req.setAttribute("pages", pages);
-            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ORDERS_FOR_SALE_PAGE_PATH);
+        PermissionsEnum permission = authorizedUser.getPermission();
+        switch (permission) {
+            case CUSTOMER_PERMISSION:
+                Integer userPages = orderService.countPagesForUser(authorizedUser.getId());
+                req.setAttribute("pages", userPages);
+                if (pageNumber > userPages) {
+                    pageNumber = userPages;
+                }
+                List<OrderForCustomerDTO> userOrders = orderService.getAllForUser(authorizedUser.getId(), pageNumber);
+                if (userOrders.isEmpty()) {
+                    req.setAttribute("error", "You have no orders!");
+                }
+                req.setAttribute("orders", userOrders);
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ORDERS_PAGE_PATH);
+            case SALE_PERMISSION:
+                Integer pages = orderService.countPages();
+                req.setAttribute("pages", pages);
+                if (pageNumber > pages) {
+                    pageNumber = pages;
+                }
+                List<OrderForSaleDTO> orders = orderService.getAll(pageNumber);
+                if (orders.isEmpty()) {
+                    req.setAttribute("error", "There is no orders!");
+                }
+                req.setAttribute("orders", orders);
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ORDERS_FOR_SALE_PAGE_PATH);
+                default:
+                    session.removeAttribute(Constants.SESSION_USER_KEY);
+                    return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
         }
     }
 }

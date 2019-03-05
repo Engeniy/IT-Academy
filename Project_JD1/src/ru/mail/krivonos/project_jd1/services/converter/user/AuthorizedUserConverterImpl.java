@@ -24,17 +24,14 @@ public class AuthorizedUserConverterImpl implements AuthorizedUserConverter {
     @Override
 
     public User fromDTO(AuthorizedUserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setRole(roleConverter.fromDTO(userDTO.getRole()));
-        return user;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public AuthorizedUserDTO toDTO(User user) {
         AuthorizedUserDTO userDTO = new AuthorizedUserDTO();
         userDTO.setId(user.getId());
-        userDTO.setRole(roleConverter.toDTO(user.getRole()));
+        userDTO.setPermission(user.getRole().getPermissions().get(0));
         return userDTO;
     }
 }

@@ -32,7 +32,7 @@ public class ConnectionTest {
 
 //        File xsdFile = new File("src/ru/mail/krivonos/project_jd1/resources/itemschema.xsd");
 //        File xmlFile = new File("src/ru/mail/krivonos/project_jd1/resources/inititems.xml");
-//        JAXBParserService jaxbParserService = JAXBParserServiceImpl.getInstance();
+//        ItemsUploadService jaxbParserService = ItemsUploadServiceImpl.getInstance();
 //        System.out.println(jaxbParserService.validate(xsdFile, xmlFile));
 //        System.out.println(jaxbParserService.parse(xmlFile));
     }

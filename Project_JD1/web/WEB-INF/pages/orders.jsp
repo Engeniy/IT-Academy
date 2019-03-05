@@ -16,8 +16,17 @@
     <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
 <%@include file="header.html" %>
+<c:if test="${not empty message}">
+    <div class="alert alert-success">
+        <c:out value="${message}"/>
+    </div>
+</c:if>
+<c:if test="${not empty error}">
+    <div class="alert alert-danger">
+        <c:out value="${error}"/>
+    </div>
+</c:if>
 <div class="grid-orders">
     <c:forEach items="${orders}" var="order">
         <div class="product">
@@ -32,7 +41,7 @@
         </div>
     </c:forEach>
 </div>
-<ul class="pagination" style="display: flex; justify-content: center; margin: 0 20px">
+<ul class="pagination, mypagination">
     <c:forEach begin="1" var="page" end="${pages}">
         <li class="page-item" style="margin: 20px 20px; display: inline">
             <a class="page-link"

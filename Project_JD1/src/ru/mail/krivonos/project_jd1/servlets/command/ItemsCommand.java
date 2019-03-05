@@ -20,26 +20,44 @@ public class ItemsCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
+        String message = req.getParameter("message");
+        if (message != null) {
+            req.setAttribute("message", message);
+        }
+        String error = req.getParameter("error");
+        if (error != null) {
+            req.setAttribute("error", error);
+        }
+        Integer pages = itemService.countPages();
+        req.setAttribute("pages", pages);
         String page = req.getParameter("page");
         Integer pageNumber;
         if (page != null) {
             pageNumber = Integer.parseInt(page);
             if (pageNumber == 0) {
                 pageNumber = 1;
+            } else if (pageNumber > pages) {
+                pageNumber = pages;
             }
         } else {
             pageNumber = 1;
         }
+        List<ItemDTO> items = itemService.getAll(pageNumber);
+        if (items.isEmpty()) {
+            req.setAttribute("error", "There is no items!");
+        }
+        req.setAttribute("items", items);
         HttpSession session = req.getSession();
         AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
-        PermissionsEnum permission = authorizedUser.getRole().getPermissions().get(0);
-        List<ItemDTO> items = itemService.getAll(pageNumber);
-        req.setAttribute("items", items);
-        Integer pages = itemService.countPages();
-        req.setAttribute("pages", pages);
-        if (permission.equals(PermissionsEnum.CUSTOMER_PERMISSION)) {
-            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_PAGE_PATH);
-        } else return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_FOR_SALE_PAGE_PATH);
-
+        PermissionsEnum permission = authorizedUser.getPermission();
+        switch (permission) {
+            case CUSTOMER_PERMISSION:
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_PAGE_PATH);
+            case SALE_PERMISSION:
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_FOR_SALE_PAGE_PATH);
+                default:
+                    session.removeAttribute(Constants.SESSION_USER_KEY);
+                    return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
+        }
     }
 }
