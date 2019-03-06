@@ -13,13 +13,7 @@ public interface UserService {
 
     void updateInfo(UserInfoDTO userDTO);
 
-    void updateEmail(Long userID, String email);
-
     void updatePassword(String email, String oldPassword, String newPassword) throws PasswordChangeException;
 
-    void deleteByID(Long id);
-
     AuthorizedUserDTO loginUser(UserLoginDTO userLoginDTO);
-
-    UserInfoDTO getInfoByID(Long id);
 }

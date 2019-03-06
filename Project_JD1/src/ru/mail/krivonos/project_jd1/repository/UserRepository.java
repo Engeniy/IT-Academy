@@ -11,13 +11,7 @@ public interface UserRepository {
 
     void updateInfo(Connection connection, User user) throws UserRepositoryException;
 
-    void updateEmail(Connection connection, Long id, String email) throws UserRepositoryException;
-
     void updatePassword(Connection connection, String email, String oldPassword, String newPassword) throws UserRepositoryException;
 
-    void deleteByID(Connection connection, Long id) throws UserRepositoryException;
-
     User findUserByEmail(Connection connection, String email) throws UserRepositoryException;
-
-    User findUserByID(Connection connection, Long id) throws UserRepositoryException;
 }

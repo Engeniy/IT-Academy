@@ -63,21 +63,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updateEmail(Connection connection, Long id, String email) throws UserRepositoryException {
-        String sql = "UPDATE User SET email = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, email);
-            preparedStatement.setLong(2, id);
-            int updated = preparedStatement.executeUpdate();
-            System.out.println("-------- " + updated + " User Email Updated --------");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new UserRepositoryException(e);
-        }
-    }
-
-    @Override
     public void updatePassword(Connection connection, String email, String oldPassword, String newPassword) throws UserRepositoryException {
         String sql = "UPDATE User SET password = ? WHERE email = ? AND password = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -86,20 +71,6 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setString(3, oldPassword);
             int updated = preparedStatement.executeUpdate();
             System.out.println("-------- " + updated + " User Password Updated --------");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new UserRepositoryException(e);
-        }
-    }
-
-    @Override
-    public void deleteByID(Connection connection, Long id) throws UserRepositoryException {
-        String sql = "DELETE * FROM User WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, id);
-            int deleted = preparedStatement.executeUpdate();
-            System.out.println("-------- " + deleted + " User Deleted --------");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -118,23 +89,6 @@ public class UserRepositoryImpl implements UserRepository {
                 User user = getUserForLogin(resultSet);
                 return user;
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new UserRepositoryException(e);
-        }
-    }
-
-    @Override
-    public User findUserByID(Connection connection, Long id) throws UserRepositoryException {
-        String sql = "SELECT surname, name, email FROM User WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, id);
-            User user;
-            try (ResultSet resultSet = preparedStatement.executeQuery();) {
-                user = getUserForInfo(resultSet);
-            }
-            return user;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

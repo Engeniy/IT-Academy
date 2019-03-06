@@ -15,16 +15,9 @@ public interface ItemRepository {
 
     Item findByUniqueNumber(Connection connection, String uniqueNumber) throws ItemRepositoryException;
 
-    void deleteItemsWithLessPrice(Connection connection, BigDecimal priceBorder) throws ItemRepositoryException;
-
     List<Item> findAll(Connection connection, Integer pageNumber) throws ItemRepositoryException;
 
     Integer countPages(Connection connection) throws ItemRepositoryException;
 
-    List<Item> findItemsInPriceRange(Connection connection, BigDecimal rangeStart, BigDecimal rangeEnd,
-                                     Integer pageNumber) throws ItemRepositoryException;
-
     void deleteByID(Connection connection, Long id) throws ItemRepositoryException;
-
-    void updatePriceByID(Connection connection, Long id, BigDecimal price) throws ItemRepositoryException;
 }

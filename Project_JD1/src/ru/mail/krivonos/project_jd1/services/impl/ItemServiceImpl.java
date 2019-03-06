@@ -85,24 +85,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void updatePriceByID(Long id, BigDecimal price) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                itemRepository.updatePriceByID(connection, id, price);
-                connection.commit();
-            } catch (SQLException | ItemRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<ItemDTO> getAll(Integer pageNumber) {
         try (Connection connection = connectionService.getConnection()) {
             try {
@@ -160,52 +142,7 @@ public class ItemServiceImpl implements ItemService {
                     if (byUniqueNumber != null) {
                         throw new ItemUniqueNumberException();
                     }
-                    //items.add(item);
                     itemRepository.add(connection, item);
-                }
-                //itemRepository.addItems(connection, items);
-                connection.commit();
-            } catch (SQLException | ItemRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void deleteItemsWithLessPrice(BigDecimal priceBorder) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                itemRepository.deleteItemsWithLessPrice(connection, priceBorder);
-                connection.commit();
-            } catch (SQLException | ItemRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void multiplyPricesFromRange(BigDecimal rangeStart, BigDecimal rangeEnd, Double multiplier,
-                                        Integer pageNumber) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                List<Item> items = itemRepository.findItemsInPriceRange(connection, rangeStart, rangeEnd, pageNumber);
-                if (!items.isEmpty()) {
-                    for (Item item : items) {
-                        BigDecimal price = item.getPrice().multiply(BigDecimal.valueOf(multiplier));
-                        itemRepository.updatePriceByID(connection, item.getId(), price);
-                    }
                 }
                 connection.commit();
             } catch (SQLException | ItemRepositoryException e) {

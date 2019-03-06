@@ -19,7 +19,6 @@ import java.io.IOException;
 public class LoginCommand implements Command {
 
     private UserService userService = UserServiceImpl.getInstance();
-    private ItemService itemService = ItemServiceImpl.getInstance();
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {

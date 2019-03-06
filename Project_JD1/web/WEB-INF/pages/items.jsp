@@ -44,7 +44,6 @@
         </div>
     </c:forEach>
 </div>
-
 <ul class="pagination, mypagination">
     <c:forEach begin="1" var="page" end="${pages}">
         <li class="page-item" style="margin: 0 20px; display: inline">
@@ -53,6 +52,5 @@
         </li>
     </c:forEach>
 </ul>
-
 </body>
 </html>

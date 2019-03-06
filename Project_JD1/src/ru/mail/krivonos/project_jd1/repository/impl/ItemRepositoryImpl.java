@@ -87,20 +87,6 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public void deleteItemsWithLessPrice(Connection connection, BigDecimal priceBorder) throws ItemRepositoryException {
-        String sql = "UPDATE Item SET deleted = TRUE WHERE price < ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setBigDecimal(1, priceBorder);
-            int deleted = preparedStatement.executeUpdate();
-            System.out.println("-------- " + deleted + " Items Deleted --------");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new ItemRepositoryException(e);
-        }
-    }
-
-    @Override
     public List<Item> findAll(Connection connection, Integer pageNumber) throws ItemRepositoryException {
         String sql = "SELECT * FROM Item WHERE deleted = FALSE LIMIT ? OFFSET ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -141,48 +127,12 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> findItemsInPriceRange(Connection connection, BigDecimal rangeStart, BigDecimal rangeEnd,
-                                            Integer pageNumber) throws ItemRepositoryException {
-        String sql = "SELECT * FROM Item WHERE price >= ? AND price <= ? AND deleted <> TRUE LIMIT ? OFFSET ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setBigDecimal(1, rangeStart);
-            preparedStatement.setBigDecimal(2, rangeEnd);
-            preparedStatement.setInt(3, LIMIT_VALUE);
-            preparedStatement.setInt(4, LIMIT_VALUE * pageNumber);
-            List<Item> items;
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                items = getItems(resultSet);
-            }
-            return items;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new ItemRepositoryException(e);
-        }
-    }
-
-    @Override
     public void deleteByID(Connection connection, Long id) throws ItemRepositoryException {
         String sql = "UPDATE Item SET deleted = TRUE WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             int deleted = preparedStatement.executeUpdate();
             System.out.println("-------- " + deleted + " Item Deleted --------");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new ItemRepositoryException(e);
-        }
-    }
-
-    @Override
-    public void updatePriceByID(Connection connection, Long id, BigDecimal price) throws ItemRepositoryException {
-        String sql = "UPDATE Item SET price = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setBigDecimal(1, price);
-            preparedStatement.setLong(2, id);
-            int updated = preparedStatement.executeUpdate();
-            System.out.println("-------- " + updated + " Item Deleted --------");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();

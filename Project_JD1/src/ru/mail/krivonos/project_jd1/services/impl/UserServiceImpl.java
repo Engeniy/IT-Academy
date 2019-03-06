@@ -94,24 +94,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateEmail(Long userID, String email) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                userRepository.updateEmail(connection, userID, email);
-                connection.commit();
-            } catch (SQLException | UserRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void updatePassword(String email, String oldPassword, String newPassword) throws PasswordChangeException {
         try (Connection connection = connectionService.getConnection()) {
             try {
@@ -122,24 +104,6 @@ public class UserServiceImpl implements UserService {
                 } else {
                     throw new PasswordChangeException("Invalid old password!");
                 }
-                connection.commit();
-            } catch (SQLException | UserRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void deleteByID(Long id) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                userRepository.deleteByID(connection, id);
                 connection.commit();
             } catch (SQLException | UserRepositoryException e) {
                 System.out.println(e.getMessage());
@@ -174,31 +138,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         }
         System.out.println("-------- Invalid Login Or Password --------");
-        return null;
-    }
-
-    @Override
-    public UserInfoDTO getInfoByID(Long id) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                User user = userRepository.findUserByID(connection, id);
-                if (user != null) {
-                    UserInfoDTO userDTO = UserInfoConverterImpl.getInstance().toDTO(user);
-                    connection.commit();
-                    System.out.println("-------- User Info Was Found --------");
-                    return userDTO;
-                }
-            } catch (SQLException | UserRepositoryException e) {
-                System.out.println(e.getMessage());
-                connection.rollback();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        System.out.println("-------- User Wasn't Found --------");
         return null;
     }
 
