@@ -160,9 +160,10 @@ public class ItemServiceImpl implements ItemService {
                     if (byUniqueNumber != null) {
                         throw new ItemUniqueNumberException();
                     }
-                    items.add(item);
+                    //items.add(item);
+                    itemRepository.add(connection, item);
                 }
-                itemRepository.addItems(connection, items);
+                //itemRepository.addItems(connection, items);
                 connection.commit();
             } catch (SQLException | ItemRepositoryException e) {
                 System.out.println(e.getMessage());

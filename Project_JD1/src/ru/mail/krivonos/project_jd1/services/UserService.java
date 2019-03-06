@@ -1,5 +1,6 @@
 package ru.mail.krivonos.project_jd1.services;
 
+import ru.mail.krivonos.project_jd1.services.exceptions.PasswordChangeException;
 import ru.mail.krivonos.project_jd1.services.exceptions.RegistrationException;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserInfoDTO;
@@ -14,7 +15,7 @@ public interface UserService {
 
     void updateEmail(Long userID, String email);
 
-    void updatePassword(String email, String oldPassword, String newPassword);
+    void updatePassword(String email, String oldPassword, String newPassword) throws PasswordChangeException;
 
     void deleteByID(Long id);
 

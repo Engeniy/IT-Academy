@@ -19,8 +19,8 @@ public class UpdateStateCommand implements Command {
         Long id = Long.parseLong(req.getParameter("id"));
         String state = req.getParameter("state");
         orderService.update(id, state);
-        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ORDERS.name() +
-                Constants.MESSAGE_POSTFIX + "State_changed!");
+        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ORDERS.name().toLowerCase() +
+                Constants.MESSAGE_POSTFIX + "State changed!");
         return null;
     }
 }

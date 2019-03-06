@@ -16,9 +16,8 @@ public class DeleteItemCommand implements Command {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         itemService.deleteByID(Long.parseLong(req.getParameter("item_id")));
-        req.setAttribute("message", "Item deleted!");
-        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name() +
-                Constants.MESSAGE_POSTFIX + "Item_deleted!");
+        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
+                Constants.MESSAGE_POSTFIX + "Item deleted!");
         return null;
     }
 }

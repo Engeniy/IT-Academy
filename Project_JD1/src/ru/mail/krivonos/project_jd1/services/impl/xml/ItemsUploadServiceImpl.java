@@ -67,7 +67,7 @@ public class ItemsUploadServiceImpl implements ItemsUploadService {
     }
 
     @Override
-    public boolean validate(File xsdFile, File xmlFile) {
+    public boolean isValid(File xsdFile, File xmlFile) {
         Source xmlSource = new StreamSource(xmlFile);
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {

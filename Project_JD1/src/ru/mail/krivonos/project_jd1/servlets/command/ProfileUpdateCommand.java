@@ -4,6 +4,7 @@ import ru.mail.krivonos.project_jd1.config.ConfigurationManagerImpl;
 import ru.mail.krivonos.project_jd1.config.PropertiesVariables;
 import ru.mail.krivonos.project_jd1.services.ProfileService;
 import ru.mail.krivonos.project_jd1.services.UserService;
+import ru.mail.krivonos.project_jd1.services.exceptions.PasswordChangeException;
 import ru.mail.krivonos.project_jd1.services.impl.ProfileServiceImpl;
 import ru.mail.krivonos.project_jd1.services.impl.UserServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.ProfileDTO;
@@ -41,7 +42,11 @@ public class ProfileUpdateCommand implements Command {
         String oldPassword = req.getParameter("old-password");
         String newPassword = req.getParameter("new-password");
         if (oldPassword != null && newPassword != null) {
-            userService.updatePassword(email, oldPassword, newPassword);
+            try {
+                userService.updatePassword(email, oldPassword, newPassword);
+            } catch (PasswordChangeException e) {
+                req.setAttribute("error", "Invalid old password!");
+            }
         }
         req.setAttribute("profile", profileDTO);
         return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);

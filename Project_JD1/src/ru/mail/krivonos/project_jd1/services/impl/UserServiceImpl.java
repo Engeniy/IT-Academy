@@ -13,6 +13,7 @@ import ru.mail.krivonos.project_jd1.services.UserService;
 import ru.mail.krivonos.project_jd1.services.converter.user.AuthorizedUserConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.user.UserInfoConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.user.UserRegistrationConverterImpl;
+import ru.mail.krivonos.project_jd1.services.exceptions.PasswordChangeException;
 import ru.mail.krivonos.project_jd1.services.exceptions.RegistrationException;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserInfoDTO;
@@ -111,11 +112,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String email, String oldPassword, String newPassword) {
+    public void updatePassword(String email, String oldPassword, String newPassword) throws PasswordChangeException {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                userRepository.updatePassword(connection, email, oldPassword, newPassword);
+                User userByEmail = userRepository.findUserByEmail(connection, email);
+                if (validatePassword(oldPassword, userByEmail.getPassword())) {
+                    userRepository.updatePassword(connection, email, oldPassword, newPassword);
+                } else {
+                    throw new PasswordChangeException("Invalid old password!");
+                }
                 connection.commit();
             } catch (SQLException | UserRepositoryException e) {
                 System.out.println(e.getMessage());

@@ -38,7 +38,7 @@
                 <p class="product-desc">Description: ${item.description}</p>
                 <p class="product-desc">Unique number: ${item.uniqueNumber}</p>
                 <p class="product-price">Price: ${item.price}</p>
-                <input name="quantity" type="number" min="0" placeholder="Quantity" required/>
+                <input name="quantity" type="number" min="1" placeholder="Quantity" required/>
                 <button>Order</button>
             </form>
         </div>

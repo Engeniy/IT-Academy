@@ -39,7 +39,7 @@
 </c:if>
 <div class="grid-orders">
     <c:forEach items="${orders}" var="order">
-        <div class="product">
+        <div class="product" style="">
             <form method="post" action="${pageContext.request.contextPath}/dispatcher?command=update_state">
                 <input name="id" value="${order.id}" hidden>
                 <p class="product-title">Name: ${order.item.name}</p>
@@ -47,7 +47,7 @@
                 <p class="product-desc" type="date">Date: ${order.dateOfCreation}</p>
                 <p class="product-desc" type="email">Email: ${order.user.email}</p>
                 <p class="product-desc" type="text">Current state: ${order.state}</p>
-                <p class="product-desc" type="text">Choose new state:</p>
+                <p class="product-desc" type="text">Choose new state:
                 <select name="state">
                     <option value="NEW">NEW</option>
                     <option value="REVIEWING">REVIEWING</option>
@@ -55,9 +55,10 @@
                     <option value="DELIVERED">DELIVERED</option>
                     <option selected value="${order.state}">${order.state}</option>
                 </select>
+                </p>
                 <p class="product-desc" type="text">Quantity: ${order.quantity}</p>
-                <p type="number" class="product-price">Sum: ${order.sum}</p>
                 <button>Update</button>
+                <p type="number" class="product-price">Sum: ${order.sum}</p>
             </form>
         </div>
     </c:forEach>

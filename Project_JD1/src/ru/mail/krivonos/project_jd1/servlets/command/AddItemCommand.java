@@ -1,5 +1,7 @@
 package ru.mail.krivonos.project_jd1.servlets.command;
 
+import ru.mail.krivonos.project_jd1.config.ConfigurationManagerImpl;
+import ru.mail.krivonos.project_jd1.config.PropertiesVariables;
 import ru.mail.krivonos.project_jd1.services.ItemService;
 import ru.mail.krivonos.project_jd1.services.exceptions.ItemUniqueNumberException;
 import ru.mail.krivonos.project_jd1.services.impl.ItemServiceImpl;
@@ -28,12 +30,11 @@ public class AddItemCommand implements Command {
         try {
             itemService.add(itemDTO);
         } catch (ItemUniqueNumberException e) {
-            resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
-                    Constants.ERROR_POSTFIX + "Item_with_the_same_unique_number_exists!");
-            return null;
+            req.setAttribute("error", "Item with the same unique number exists!");
+            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.CREATE_ITEM_PAGE_PATH);
         }
         resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
-                Constants.MESSAGE_POSTFIX + "Item_added!");
+                Constants.MESSAGE_POSTFIX + "Item added!");
         return null;
     }
 }

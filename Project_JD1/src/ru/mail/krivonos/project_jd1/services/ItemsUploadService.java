@@ -13,5 +13,5 @@ public interface ItemsUploadService {
 
     List<XMLItemDTO> parse(File file);
 
-    boolean validate(File xsdFile, File xmlFile);
+    boolean isValid(File xsdFile, File xmlFile);
 }

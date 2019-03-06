@@ -33,7 +33,8 @@ public class LoginCommand implements Command {
             if (authorizedUserDTO != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute(Constants.SESSION_USER_KEY, authorizedUserDTO);
-                resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase());
+                resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL +
+                        CommandEnum.ITEMS.name().toLowerCase());
                 return null;
             } else {
                 req.setAttribute("error", "Invalid email or password!");

@@ -1,5 +1,7 @@
 package ru.mail.krivonos.project_jd1.servlets.command;
 
+import ru.mail.krivonos.project_jd1.config.ConfigurationManagerImpl;
+import ru.mail.krivonos.project_jd1.config.PropertiesVariables;
 import ru.mail.krivonos.project_jd1.services.ItemService;
 import ru.mail.krivonos.project_jd1.services.ItemsUploadService;
 import ru.mail.krivonos.project_jd1.services.exceptions.ItemUniqueNumberException;
@@ -27,7 +29,7 @@ public class UploadXMLCommand implements Command {
             "/home/alex/Documents/IT-Academy/Project_JD1/web/resources/upload/temp.xml";
 
     private static final String XSD_PATH =
-            "/home/alex/Documents/IT-Academy/Project_JD1/web/resources/upload/itemschema.xsd";
+            "/home/alex/Documents/IT-Academy/Project_JD1/src/ru/mail/krivonos/project_jd1/resources/itemschema.xsd";
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -35,31 +37,22 @@ public class UploadXMLCommand implements Command {
         Part filePart = req.getPart("file");
         File inputFile = itemsUploadService.uploadFile(filePart, UPLOAD_DIR);
         File schema = new File(XSD_PATH);
-        if (itemsUploadService.validate(schema, inputFile)) {
+        if (itemsUploadService.isValid(schema, inputFile)) {
             List<XMLItemDTO> xmlItems = itemsUploadService.parse(inputFile);
             try {
                 itemService.addItems(xmlItems);
             } catch (ItemUniqueNumberException e) {
-                resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
-                        Constants.ERROR_POSTFIX + "Adding_denied!One_of_the_items_has_the_same_unique_number!");
-                return null;
+                req.setAttribute("error", "Adding denied! One or more items has the same unique number!");
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.UPLOAD_PAGE_PATH);
             } finally {
                 inputFile.delete();
             }
+        } else {
+            req.setAttribute("error", "You file is not valid!");
+            return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.UPLOAD_PAGE_PATH);
         }
         resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
-                Constants.MESSAGE_POSTFIX + "Items_added!");
+                Constants.MESSAGE_POSTFIX + "Items added!");
         return null;
-    }
-
-    private String extractFileName(Part part) {
-        String contentDisp = part.getHeader("content-disposition");
-        String[] items = contentDisp.split(";");
-        for (String s : items) {
-            if (s.trim().startsWith("filename")) {
-                return s.substring(s.indexOf("=") + 2, s.length() - 1);
-            }
-        }
-        return "";
     }
 }
