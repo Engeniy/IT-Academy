@@ -7,12 +7,11 @@ import ru.mail.krivonos.project_jd1.repository.exceptions.UserRepositoryExceptio
 import ru.mail.krivonos.project_jd1.repository.impl.UserRepositoryImpl;
 import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
 import ru.mail.krivonos.project_jd1.repository.model.Role;
-import ru.mail.krivonos.project_jd1.repository.model.RolesEnum;
 import ru.mail.krivonos.project_jd1.repository.model.User;
 import ru.mail.krivonos.project_jd1.services.UserService;
-import ru.mail.krivonos.project_jd1.services.converter.user.AuthorizedUserConverterImpl;
-import ru.mail.krivonos.project_jd1.services.converter.user.UserInfoConverterImpl;
-import ru.mail.krivonos.project_jd1.services.converter.user.UserRegistrationConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.AuthorizedUserConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.UserInfoConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.UserRegistrationConverterImpl;
 import ru.mail.krivonos.project_jd1.services.exceptions.PasswordChangeException;
 import ru.mail.krivonos.project_jd1.services.exceptions.RegistrationException;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
@@ -51,15 +50,10 @@ public class UserServiceImpl implements UserService {
             try {
                 connection.setAutoCommit(false);
                 User user = UserRegistrationConverterImpl.getInstance().fromDTO(userRegistrationDTO);
-                User userByEmail = userRepository.findUserByEmail(connection, user.getEmail());
-                if (userByEmail != null) {
+                if (!validateEmail(connection, user.getEmail())) {
                     throw new RegistrationException();
                 }
-                Role role = new Role();
-                role.setName(DEFAUL_ROLE);
-                List<PermissionsEnum> permissions = new ArrayList<>();
-                permissions.add(PermissionsEnum.CUSTOMER_PERMISSION);
-                role.setPermissions(permissions);
+                Role role = getDefaultRole();
                 user.setRole(role);
                 userRepository.add(connection, user);
                 connection.commit();
@@ -102,7 +96,7 @@ public class UserServiceImpl implements UserService {
                 if (validatePassword(oldPassword, userByEmail.getPassword())) {
                     userRepository.updatePassword(connection, email, oldPassword, newPassword);
                 } else {
-                    throw new PasswordChangeException("Invalid old password!");
+                    throw new PasswordChangeException();
                 }
                 connection.commit();
             } catch (SQLException | UserRepositoryException e) {
@@ -139,6 +133,23 @@ public class UserServiceImpl implements UserService {
         }
         System.out.println("-------- Invalid Login Or Password --------");
         return null;
+    }
+
+    private Role getDefaultRole() {
+        Role role = new Role();
+        role.setName(DEFAUL_ROLE);
+        List<PermissionsEnum> permissions = new ArrayList<>();
+        permissions.add(PermissionsEnum.CUSTOMER_PERMISSION);
+        role.setPermissions(permissions);
+        return role;
+    }
+
+    private boolean validateEmail(Connection connection, String email) throws UserRepositoryException {
+        User userByEmail = userRepository.findUserByEmail(connection, email);
+        if (userByEmail != null) {
+            return false;
+        }
+        return true;
     }
 
     private boolean validatePassword(String passwordInput, String savedPassword) {

@@ -1,8 +1,7 @@
 package ru.mail.krivonos.project_jd1.services.impl;
 
-import ru.mail.krivonos.project_jd1.config.ConfigurationManager;
-import ru.mail.krivonos.project_jd1.config.ConfigurationManagerImpl;
-import ru.mail.krivonos.project_jd1.config.PropertiesVariables;
+import ru.mail.krivonos.project_jd1.config.DatabaseInitManager;
+import ru.mail.krivonos.project_jd1.config.DatabaseInitManagerImpl;
 import ru.mail.krivonos.project_jd1.repository.DatabaseInitRepository;
 import ru.mail.krivonos.project_jd1.repository.connection.ConnectionService;
 import ru.mail.krivonos.project_jd1.repository.connection.ConnectionServiceImpl;
@@ -22,7 +21,7 @@ public class DatabaseInitServiceImpl implements DatabaseInitService {
 
     private DatabaseInitRepository databaseInitRepository = DatabaseInitRepositoryImpl.getInstance();
 
-    private ConfigurationManager configurationManager = ConfigurationManagerImpl.getInstance();
+    private DatabaseInitManager databaseInitManager = DatabaseInitManagerImpl.getInstance();
 
     private static final String SCRIPT_SEPARATOR = ";";
 
@@ -39,7 +38,7 @@ public class DatabaseInitServiceImpl implements DatabaseInitService {
     @Override
     public void initDatabase() {
         System.out.println("-------- Initialising Database --------");
-        File scriptFile = new File(configurationManager.getProperty(PropertiesVariables.DATABASE_SQLINIT));
+        File scriptFile = new File(databaseInitManager.getInitialFilePath());
         ConnectionService connectionService = ConnectionServiceImpl.getInstance();
         try (Connection connection = connectionService.getConnection()) {
             try (BufferedReader br = new BufferedReader(new FileReader(scriptFile))) {

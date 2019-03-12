@@ -24,7 +24,7 @@
 <div class="login-page">
     <div class="form">
         <form class="login-form" method="post"
-              enctype="multipart/form-data" action="${pageContext.request.contextPath}/dispatcher?command=upload_xml">
+              enctype="multipart/form-data" action="${pageContext.request.contextPath}/upload-xml">
             <p class="message">Upload your items file.</p>
             <input type="file" name="file" required/>
             <button>Upload</button>

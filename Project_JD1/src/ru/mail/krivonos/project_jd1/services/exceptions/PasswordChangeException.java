@@ -4,12 +4,4 @@ public class PasswordChangeException extends Exception {
 
     public PasswordChangeException() {
     }
-
-    public PasswordChangeException(String s) {
-        super(s);
-    }
-
-    public PasswordChangeException(Throwable throwable) {
-        super(throwable);
-    }
 }

@@ -11,7 +11,6 @@ public enum CommandEnum {
     CREATE_ITEM,
     ADD_ITEM,
     UPLOAD,
-    UPLOAD_XML,
     ORDERS,
     ORDER,
     UPDATE_STATE,
@@ -21,6 +20,12 @@ public enum CommandEnum {
     LOGOUT;
 
     public static CommandEnum getCommand(String command) {
-        return CommandEnum.valueOf(command.toUpperCase());
+        try {
+            return CommandEnum.valueOf(command.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Command not found!");
+            e.printStackTrace();
+        }
+        return null;
     }
 }

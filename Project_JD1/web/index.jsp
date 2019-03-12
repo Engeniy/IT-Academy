@@ -10,29 +10,8 @@
 <html>
 <head>
     <title>Login</title>
-    <link href="${pageContext.request.contextPath}/resources/css/login.css" rel="stylesheet" type="text/css">
-    <link href="${pageContext.request.contextPath}/resources/css/itempage.css" rel="stylesheet" type="text/css">
-    <link href="${pageContext.request.contextPath}/resources/css/bootstrap.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<c:if test="${not empty error}">
-    <div class="alert alert-danger">
-        <c:out value="${error}"/>
-    </div>
-</c:if>
-<div class="login-page">
-    <div class="form">
-        <form class="login-form" method="post" action="${pageContext.request.contextPath}/dispatcher?command=login">
-            <input type="text" name="email" placeholder="E-mail" required/>
-            <input type="password" name="password" placeholder="Password" required/>
-            <button>login</button>
-            <p class="message">Not registered?</p>
-            <button form="register">Create an account</button>
-        </form>
-        <form class="login-page" id="register" method="post"
-              action="${pageContext.request.contextPath}/dispatcher?command=registration_redirect&state=new">
-        </form>
-    </div>
-</div>
+<jsp:forward page="WEB-INF/pages/login.jsp"/>
 </body>
 </html>

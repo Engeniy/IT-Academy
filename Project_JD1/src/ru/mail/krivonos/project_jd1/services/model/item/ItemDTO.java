@@ -1,7 +1,5 @@
 package ru.mail.krivonos.project_jd1.services.model.item;
 
-import java.math.BigDecimal;
-
 public class ItemDTO {
 
     private Long id;
@@ -12,7 +10,7 @@ public class ItemDTO {
 
     private String uniqueNumber;
 
-    private BigDecimal price;
+    private String price;
 
     public Long getId() {
         return id;
@@ -46,11 +44,11 @@ public class ItemDTO {
         this.uniqueNumber = uniqueNumber;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 }

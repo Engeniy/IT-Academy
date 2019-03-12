@@ -5,7 +5,12 @@ import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
 import ru.mail.krivonos.project_jd1.servlets.model.Constants;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,7 +26,8 @@ public class AuthenticationFilter implements Filter {
     private static final String LOGIN_PATH = "/index.jsp";
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
+        System.out.println("AuthenticationFilter init!");
         EVERYBODY_AVAILABLE.add(CommandEnum.REGISTRATION);
         EVERYBODY_AVAILABLE.add(CommandEnum.REGISTRATION_REDIRECT);
         EVERYBODY_AVAILABLE.add(CommandEnum.LOGIN);
@@ -37,7 +43,6 @@ public class AuthenticationFilter implements Filter {
         SALE_AVAILABLE.add(CommandEnum.CREATE_ITEM);
         SALE_AVAILABLE.add(CommandEnum.ADD_ITEM);
         SALE_AVAILABLE.add(CommandEnum.UPLOAD);
-        SALE_AVAILABLE.add(CommandEnum.UPLOAD_XML);
         SALE_AVAILABLE.add(CommandEnum.ORDERS);
         SALE_AVAILABLE.add(CommandEnum.UPDATE_STATE);
         SALE_AVAILABLE.add(CommandEnum.CHOOSE_STATE);

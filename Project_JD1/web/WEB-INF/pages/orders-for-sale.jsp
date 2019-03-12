@@ -19,11 +19,24 @@
 <%@include file="header.html" %>
 <form class="menu-main" method="post" action="${pageContext.request.contextPath}/dispatcher?command=choose_state">
     <select name="filter-state">
-        <option value="ALL">ALL</option>
-        <option value="NEW">NEW</option>
-        <option value="REVIEWING">REVIEWING</option>
-        <option value="IN_PROGRESS">IN_PROGRESS</option>
-        <option value="DELIVERED">DELIVERED</option>
+        <c:choose>
+            <c:when test="${empty currentState}">
+                <option selected value="ALL">ALL</option>
+            </c:when>
+            <c:otherwise>
+                <option value="ALL">ALL</option>
+            </c:otherwise>
+        </c:choose>
+        <c:forEach items="${states}" var="state">
+            <c:choose>
+                <c:when test="${currentState == state}">
+                    <option selected value="${state}"><c:out value="${state}"/></option>
+                </c:when>
+                <c:otherwise>
+                    <option value="${state}"><c:out value="${state}"/></option>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
     </select>
     <button>Choose</button>
 </form>
@@ -42,23 +55,28 @@
         <div class="product" style="">
             <form method="post" action="${pageContext.request.contextPath}/dispatcher?command=update_state">
                 <input name="id" value="${order.id}" hidden>
-                <p class="product-title">Name: ${order.item.name}</p>
-                <p class="product-desc">Unique number: ${order.item.uniqueNumber}</p>
-                <p class="product-desc" type="date">Date: ${order.dateOfCreation}</p>
-                <p class="product-desc" type="email">Email: ${order.user.email}</p>
-                <p class="product-desc" type="text">Current state: ${order.state}</p>
+                <p class="product-title">Name: <c:out value="${order.item.name}"/></p>
+                <p class="product-desc">Unique number: <c:out value="${order.item.uniqueNumber}"/></p>
+                <p class="product-desc" type="date">Date: <c:out value="${order.dateOfCreation}"/></p>
+                <p class="product-desc" type="email">Email: <c:out value="${order.user.email}"/></p>
+                <p class="product-desc" type="text">Current state: <c:out value="${order.state}"/></p>
                 <p class="product-desc" type="text">Choose new state:
-                <select name="state">
-                    <option value="NEW">NEW</option>
-                    <option value="REVIEWING">REVIEWING</option>
-                    <option value="IN_PROGRESS">IN_PROGRESS</option>
-                    <option value="DELIVERED">DELIVERED</option>
-                    <option selected value="${order.state}">${order.state}</option>
-                </select>
+                    <select name="state">
+                        <c:forEach items="${states}" var="state">
+                            <c:choose>
+                                <c:when test="${order.state == state}">
+                                    <option selected value="${state}"><c:out value="${state}"/></option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${state}"><c:out value="${state}"/></option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
                 </p>
-                <p class="product-desc" type="text">Quantity: ${order.quantity}</p>
+                <p class="product-desc" type="text">Quantity: <c:out value="${order.quantity}"/></p>
                 <button>Update</button>
-                <p type="number" class="product-price">Sum: ${order.sum}</p>
+                <p type="number" class="product-price">Sum: <c:out value="${order.sum}"/></p>
             </form>
         </div>
     </c:forEach>
@@ -67,7 +85,8 @@
     <c:forEach begin="1" var="page" end="${pages}">
         <li class="page-item, mypagination">
             <a class="page-link"
-               href="${pageContext.request.contextPath}/dispatcher?command=orders&page=${page}">${page}</a>
+               href="${pageContext.request.contextPath}/dispatcher?command=orders&page=${page}"><c:out
+                    value="${page}"/></a>
         </li>
     </c:forEach>
 </ul>

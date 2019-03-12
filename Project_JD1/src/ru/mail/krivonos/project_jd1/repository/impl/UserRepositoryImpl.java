@@ -4,7 +4,6 @@ import ru.mail.krivonos.project_jd1.repository.UserRepository;
 import ru.mail.krivonos.project_jd1.repository.exceptions.UserRepositoryException;
 import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
 import ru.mail.krivonos.project_jd1.repository.model.Role;
-import ru.mail.krivonos.project_jd1.repository.model.RolesEnum;
 import ru.mail.krivonos.project_jd1.repository.model.User;
 
 import java.sql.Connection;

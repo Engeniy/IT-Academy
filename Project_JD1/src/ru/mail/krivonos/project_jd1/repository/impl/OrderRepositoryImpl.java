@@ -49,39 +49,28 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Integer countPages(Connection connection) throws OrderRepositoryException {
         String sql = "SELECT COUNT(*) AS lines_number FROM `Order`";
-        int pagesNumber = 0;
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(sql)) {
                 if (resultSet.next()) {
-                    int lines_number = resultSet.getInt("lines_number");
-                    pagesNumber = lines_number / LIMIT_VALUE;
-                    if (lines_number % LIMIT_VALUE > 0) {
-                        pagesNumber += 1;
-                    }
+                    return resultSet.getInt("lines_number");
                 }
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
             throw new OrderRepositoryException(e);
         }
-        return pagesNumber;
+        return 0;
     }
 
     @Override
     public Integer countPagesForUser(Connection connection, Long id) throws OrderRepositoryException {
         String sql = "SELECT COUNT(*) AS lines_number FROM `Order` WHERE user_id = ?";
-        int pagesNumber = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    int lines_number = resultSet.getInt("lines_number");
-                    pagesNumber = lines_number / LIMIT_VALUE;
-                    if (lines_number % LIMIT_VALUE > 0) {
-                        pagesNumber += 1;
-                    }
+                    return resultSet.getInt("lines_number");
                 }
             }
         } catch (SQLException e) {
@@ -89,22 +78,17 @@ public class OrderRepositoryImpl implements OrderRepository {
             e.printStackTrace();
             throw new OrderRepositoryException(e);
         }
-        return pagesNumber;
+        return 0;
     }
 
     @Override
     public Integer countPagesForState(Connection connection, OrderState state) throws OrderRepositoryException {
         String sql = "SELECT COUNT(*) AS lines_number FROM `Order` WHERE state = ?";
-        int pagesNumber = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, state.name());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    int lines_number = resultSet.getInt("lines_number");
-                    pagesNumber = lines_number / LIMIT_VALUE;
-                    if (lines_number % LIMIT_VALUE > 0) {
-                        pagesNumber += 1;
-                    }
+                    return resultSet.getInt("lines_number");
                 }
             }
         } catch (SQLException e) {
@@ -112,7 +96,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             e.printStackTrace();
             throw new OrderRepositoryException(e);
         }
-        return pagesNumber;
+        return 0;
     }
 
     @Override
@@ -213,11 +197,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         List<Order> orders = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Order order = new Order();
-                order.setId(resultSet.getLong("id"));
-                order.setDateOfCreation(new Date(resultSet.getTimestamp("created").getTime()));
-                order.setQuantity(resultSet.getInt("quantity"));
-                order.setState(OrderState.valueOf(resultSet.getString("state")));
+                Order order = getOrder(resultSet);
                 User user = new User();
                 user.setId(resultSet.getLong("user_id"));
                 user.setEmail(resultSet.getString("user_email"));
@@ -237,15 +217,20 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
     }
 
+    private Order getOrder(ResultSet resultSet) throws SQLException {
+        Order order = new Order();
+        order.setId(resultSet.getLong("id"));
+        order.setDateOfCreation(new Date(resultSet.getTimestamp("created").getTime()));
+        order.setQuantity(resultSet.getInt("quantity"));
+        order.setState(OrderState.valueOf(resultSet.getString("state")));
+        return order;
+    }
+
     private List<Order> getOrdersForCustomer(ResultSet resultSet) throws OrderRepositoryException {
         List<Order> orders = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Order order = new Order();
-                order.setId(resultSet.getLong("id"));
-                order.setDateOfCreation(new Date(resultSet.getTimestamp("created").getTime()));
-                order.setQuantity(resultSet.getInt("quantity"));
-                order.setState(OrderState.valueOf(resultSet.getString("state")));
+                Order order = getOrder(resultSet);
                 Item item = new Item();
                 item.setName(resultSet.getString("name"));
                 item.setPrice(resultSet.getBigDecimal("price"));

@@ -4,12 +4,4 @@ public class ItemUniqueNumberException extends Exception {
 
     public ItemUniqueNumberException() {
     }
-
-    public ItemUniqueNumberException(String s) {
-        super(s);
-    }
-
-    public ItemUniqueNumberException(Throwable throwable) {
-        super(throwable);
-    }
 }

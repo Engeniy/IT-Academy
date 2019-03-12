@@ -1,8 +1,5 @@
 package ru.mail.krivonos.project_jd1.config;
 
-import ru.mail.krivonos.project_jd1.services.DatabaseInitService;
-import ru.mail.krivonos.project_jd1.services.impl.DatabaseInitServiceImpl;
-
 import java.util.ResourceBundle;
 
 public class ConfigurationManagerImpl implements ConfigurationManager {
@@ -18,8 +15,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     public static ConfigurationManager getInstance() {
         if (instance == null) {
-            instance = new ConfigurationManagerImpl();
-            bundle = ResourceBundle.getBundle(BUNDLE_NAME);
+            synchronized (ConfigurationManagerImpl.class) {
+                if (instance == null) {
+                    instance = new ConfigurationManagerImpl();
+                    bundle = ResourceBundle.getBundle(BUNDLE_NAME);
+                }
+            }
         }
         return instance;
     }

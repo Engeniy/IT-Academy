@@ -31,12 +31,12 @@
     <c:forEach items="${orders}" var="order">
         <div class="product">
             <form method="post">
-                <p class="product-title">Name: ${order.item.name}</p>
-                <p class="product-desc">Unique number: ${order.item.uniqueNumber}</p>
-                <p class="product-desc" type="date">Date: ${order.dateOfCreation}</p>
-                <p class="product-desc" type="date">State: ${order.state}</p>
-                <p class="product-desc" type="date">Quantity: ${order.quantity}</p>
-                <p type="number" class="product-price">Sum: ${order.sum}</p>
+                <p class="product-title">Name: <c:out value="${order.item.name}"/></p>
+                <p class="product-desc">Unique number: <c:out value="${order.item.uniqueNumber}"/></p>
+                <p class="product-desc" type="date">Date: <c:out value="${order.dateOfCreation}"/></p>
+                <p class="product-desc" type="date">State: <c:out value="${order.state}"/></p>
+                <p class="product-desc" type="date">Quantity: <c:out value="${order.quantity}"/></p>
+                <p type="number" class="product-price">Sum: <c:out value="${order.sum}"/></p>
             </form>
         </div>
     </c:forEach>
@@ -45,7 +45,8 @@
     <c:forEach begin="1" var="page" end="${pages}">
         <li class="page-item" style="margin: 20px 20px; display: inline">
             <a class="page-link"
-               href="${pageContext.request.contextPath}/dispatcher?command=orders&page=${page}">${page}</a>
+               href="${pageContext.request.contextPath}/dispatcher?command=orders&page=${page}"><c:out
+                    value="${page}"/></a>
         </li>
     </c:forEach>
 </ul>

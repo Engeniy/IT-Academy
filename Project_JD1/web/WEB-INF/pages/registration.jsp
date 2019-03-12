@@ -23,11 +23,41 @@
     <div class="form">
         <form class="login-form" method="post"
               action="${pageContext.request.contextPath}/dispatcher?command=registration">
+            <c:if test="${not empty messages['name']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['name']}"/>
+                </div>
+            </c:if>
             <input type="text" name="name" placeholder="Name" required/>
+            <c:if test="${not empty messages['surname']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['surname']}"/>
+                </div>
+            </c:if>
             <input type="text" name="surname" placeholder="Surname" required/>
+            <c:if test="${not empty messages['address']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['address']}"/>
+                </div>
+            </c:if>
             <input type="text" name="address" placeholder="Address" required/>
+            <c:if test="${not empty messages['telephone']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['telephone']}"/>
+                </div>
+            </c:if>
             <input type="text" name="telephone" placeholder="Telephone" required/>
+            <c:if test="${not empty messages['email']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['email']}"/>
+                </div>
+            </c:if>
             <input type="email" name="email" placeholder="E-mail" required/>
+            <c:if test="${not empty messages['password']}">
+                <div class="alert alert-danger">
+                    <c:out value="${messages['password']}"/>
+                </div>
+            </c:if>
             <input type="password" name="password" placeholder="Password" required/>
             <button>Register</button>
             <p class="message">Already registered?</p>

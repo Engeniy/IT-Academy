@@ -16,7 +16,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class ItemsUploadServiceImpl implements ItemsUploadService {
@@ -35,12 +34,11 @@ public class ItemsUploadServiceImpl implements ItemsUploadService {
 
     @Override
     public File uploadFile(Part part, String tempFileName) throws IOException {
-        String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
         File tempFile = new File(tempFileName);
         if (!tempFile.exists()) {
-           if (!tempFile.createNewFile()) {
-               throw new RuntimeException("Can't create temp file!");
-           }
+            if (!tempFile.createNewFile()) {
+                throw new RuntimeException("Can't create temp file!");
+            }
         }
         try (InputStream fileContent = part.getInputStream(); OutputStream os = new FileOutputStream(tempFile)) {
             int input;
@@ -53,11 +51,11 @@ public class ItemsUploadServiceImpl implements ItemsUploadService {
     }
 
     @Override
-    public List<XMLItemDTO> parse(File file) {
+    public List<XMLItemDTO> parse(InputStream fileContent) {
         try {
             JAXBContext context = JAXBContext.newInstance(XMLItemsDTO.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            XMLItemsDTO itemsDTO = (XMLItemsDTO) unmarshaller.unmarshal(file);
+            XMLItemsDTO itemsDTO = (XMLItemsDTO) unmarshaller.unmarshal(fileContent);
             return itemsDTO.getXmlItemDTOList();
         } catch (JAXBException e) {
             System.out.println(e.getMessage());
@@ -67,11 +65,11 @@ public class ItemsUploadServiceImpl implements ItemsUploadService {
     }
 
     @Override
-    public boolean isValid(File xsdFile, File xmlFile) {
-        Source xmlSource = new StreamSource(xmlFile);
+    public boolean isValid(File schemaFile, InputStream fileContent) {
+        Source xmlSource = new StreamSource(fileContent);
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            Schema schema = schemaFactory.newSchema(xsdFile);
+            Schema schema = schemaFactory.newSchema(schemaFile);
             Validator validator = schema.newValidator();
             validator.validate(xmlSource);
             return true;

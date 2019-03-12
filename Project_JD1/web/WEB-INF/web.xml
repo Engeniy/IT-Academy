@@ -13,6 +13,34 @@
         <url-pattern>/dispatcher/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>ru.mail.krivonos.project_jd1.servlets.UploadServlet</servlet-class>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>20000000</max-file-size>
+            <max-request-size>25000000</max-request-size>
+            <file-size-threshold>1000000</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/upload-xml</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ExceptionServlet</servlet-name>
+        <servlet-class>ru.mail.krivonos.project_jd1.servlets.ExceptionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExceptionServlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error</location>
+    </error-page>
+
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/resources/*</url-pattern>
@@ -28,9 +56,30 @@
         <servlet-name>DispatcherServlet</servlet-name>
     </filter-mapping>
 
+    <filter>
+        <filter-name>LogFilter</filter-name>
+        <filter-class>ru.mail.krivonos.project_jd1.servlets.filters.LogFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>LogFilter</filter-name>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-name>ExceptionServlet</servlet-name>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>RequestEncodeFilter</filter-name>
+        <filter-class>ru.mail.krivonos.project_jd1.servlets.filters.RequestEncodeFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>RequestEncodeFilter</filter-name>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-name>ExceptionServlet</servlet-name>
+    </filter-mapping>
+
     <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
         <welcome-file>index.jsp</welcome-file>
-        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 </web-app>

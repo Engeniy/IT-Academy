@@ -7,7 +7,7 @@ import ru.mail.krivonos.project_jd1.repository.exceptions.ProfileRepositoryExcep
 import ru.mail.krivonos.project_jd1.repository.impl.ProfileRepositoryImpl;
 import ru.mail.krivonos.project_jd1.repository.model.Profile;
 import ru.mail.krivonos.project_jd1.services.ProfileService;
-import ru.mail.krivonos.project_jd1.services.converter.ProfileConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.ProfileConverterImpl;
 import ru.mail.krivonos.project_jd1.services.model.ProfileDTO;
 
 import java.sql.Connection;

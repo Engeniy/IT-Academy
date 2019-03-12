@@ -1,7 +1,6 @@
 package ru.mail.krivonos.project_jd1.services.model;
 
 import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
-import ru.mail.krivonos.project_jd1.repository.model.RolesEnum;
 
 import java.util.List;
 

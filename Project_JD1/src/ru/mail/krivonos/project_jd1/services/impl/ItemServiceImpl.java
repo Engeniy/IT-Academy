@@ -7,14 +7,14 @@ import ru.mail.krivonos.project_jd1.repository.exceptions.ItemRepositoryExceptio
 import ru.mail.krivonos.project_jd1.repository.impl.ItemRepositoryImpl;
 import ru.mail.krivonos.project_jd1.repository.model.Item;
 import ru.mail.krivonos.project_jd1.services.ItemService;
-import ru.mail.krivonos.project_jd1.services.converter.item.ItemConverter;
-import ru.mail.krivonos.project_jd1.services.converter.item.ItemConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.ItemConverter;
+import ru.mail.krivonos.project_jd1.services.converter.impl.ItemConverterImpl;
 import ru.mail.krivonos.project_jd1.services.converter.xml.XMLItemConverterImpl;
 import ru.mail.krivonos.project_jd1.services.exceptions.ItemUniqueNumberException;
 import ru.mail.krivonos.project_jd1.services.model.item.ItemDTO;
 import ru.mail.krivonos.project_jd1.services.model.xml.XMLItemDTO;
+import ru.mail.krivonos.project_jd1.services.util.PageCountUtil;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -115,9 +115,9 @@ public class ItemServiceImpl implements ItemService {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                Integer pagesNumber = itemRepository.countPages(connection);
+                int linesNumber = itemRepository.countPages(connection);
                 connection.commit();
-                return pagesNumber;
+                return PageCountUtil.countPages(linesNumber);
             } catch (SQLException | ItemRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -138,12 +138,12 @@ public class ItemServiceImpl implements ItemService {
                 List<Item> items = new ArrayList<>();
                 for (XMLItemDTO itemDTO : collection) {
                     Item item = XMLItemConverterImpl.getInstance().fromDTO(itemDTO);
-                    Item byUniqueNumber = itemRepository.findByUniqueNumber(connection, item.getUniqueNumber());
-                    if (byUniqueNumber != null) {
+                    if (!isUnique(connection, item.getUniqueNumber())) {
                         throw new ItemUniqueNumberException();
                     }
-                    itemRepository.add(connection, item);
+                    items.add(item);
                 }
+                itemRepository.addItems(connection, items);
                 connection.commit();
             } catch (SQLException | ItemRepositoryException e) {
                 System.out.println(e.getMessage());
@@ -163,5 +163,13 @@ public class ItemServiceImpl implements ItemService {
             itemDTOList.add(itemDTO);
         }
         return itemDTOList;
+    }
+
+    private boolean isUnique(Connection connection, String uniqueNumber) throws ItemRepositoryException {
+        Item byUniqueNumber = itemRepository.findByUniqueNumber(connection, uniqueNumber);
+        if (byUniqueNumber != null) {
+            return false;
+        }
+        return true;
     }
 }

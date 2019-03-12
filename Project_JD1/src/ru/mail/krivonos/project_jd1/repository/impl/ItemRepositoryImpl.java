@@ -29,10 +29,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public void add(Connection connection, Item item) throws ItemRepositoryException {
         String sql = "INSERT INTO Item (name, description, unique_number, price) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, item.getName());
-            preparedStatement.setString(2, item.getDescription());
-            preparedStatement.setString(3, item.getUniqueNumber());
-            preparedStatement.setBigDecimal(4, item.getPrice());
+            prepareItem(preparedStatement, item);
             int added = preparedStatement.executeUpdate();
             System.out.println("-------- " + added + " Item Added --------");
         } catch (SQLException e) {
@@ -44,13 +41,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void addItems(Connection connection, List<Item> items) throws ItemRepositoryException {
-        String sql = "INSERT IGNORE INTO Item (name, description, unique_number, price) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Item (name, description, unique_number, price) VALUES (?, ?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (Item item : items) {
-                preparedStatement.setString(1, item.getName());
-                preparedStatement.setString(2, item.getDescription());
-                preparedStatement.setString(3, item.getUniqueNumber());
-                preparedStatement.setBigDecimal(4, item.getPrice());
+                prepareItem(preparedStatement, item);
                 preparedStatement.addBatch();
             }
             int[] results = preparedStatement.executeBatch();
@@ -64,6 +58,13 @@ public class ItemRepositoryImpl implements ItemRepository {
             e.printStackTrace();
             throw new ItemRepositoryException(e);
         }
+    }
+
+    private void prepareItem(PreparedStatement preparedStatement, Item item) throws SQLException {
+        preparedStatement.setString(1, item.getName());
+        preparedStatement.setString(2, item.getDescription());
+        preparedStatement.setString(3, item.getUniqueNumber());
+        preparedStatement.setBigDecimal(4, item.getPrice());
     }
 
     @Override
@@ -108,22 +109,17 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public Integer countPages(Connection connection) throws ItemRepositoryException {
         String sql = "SELECT COUNT(*) AS lines_number FROM Item";
-        int pagesNumber = 0;
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
-                int lines_number = resultSet.getInt("lines_number");
-                pagesNumber = lines_number / LIMIT_VALUE;
-                if (lines_number % LIMIT_VALUE > 0) {
-                    pagesNumber += 1;
-                }
+                return resultSet.getInt("lines_number");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
             throw new ItemRepositoryException(e);
         }
-        return pagesNumber;
+        return 0;
     }
 
     @Override

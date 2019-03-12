@@ -8,12 +8,15 @@ import ru.mail.krivonos.project_jd1.repository.impl.OrderRepositoryImpl;
 import ru.mail.krivonos.project_jd1.repository.model.Order;
 import ru.mail.krivonos.project_jd1.repository.model.OrderState;
 import ru.mail.krivonos.project_jd1.services.OrderService;
-import ru.mail.krivonos.project_jd1.services.converter.order.CreatedOrderConverterImpl;
-import ru.mail.krivonos.project_jd1.services.converter.order.OrderForCustomerConverterImpl;
-import ru.mail.krivonos.project_jd1.services.converter.order.OrderForSaleConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.OrderForCustomerConverter;
+import ru.mail.krivonos.project_jd1.services.converter.OrderForSaleConverter;
+import ru.mail.krivonos.project_jd1.services.converter.impl.CreatedOrderConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.OrderForCustomerConverterImpl;
+import ru.mail.krivonos.project_jd1.services.converter.impl.OrderForSaleConverterImpl;
 import ru.mail.krivonos.project_jd1.services.model.order.CreatedOrderDTO;
 import ru.mail.krivonos.project_jd1.services.model.order.OrderForCustomerDTO;
 import ru.mail.krivonos.project_jd1.services.model.order.OrderForSaleDTO;
+import ru.mail.krivonos.project_jd1.services.util.PageCountUtil;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -30,6 +33,10 @@ public class OrderServiceImpl implements OrderService {
     private ConnectionService connectionService = ConnectionServiceImpl.getInstance();
 
     private OrderRepository orderRepository = OrderRepositoryImpl.getInstance();
+
+    private OrderForCustomerConverter orderForCustomerConverter = OrderForCustomerConverterImpl.getInstance();
+
+    private OrderForSaleConverter orderForSaleConverter = OrderForSaleConverterImpl.getInstance();
 
     private OrderServiceImpl() {
     }
@@ -66,9 +73,9 @@ public class OrderServiceImpl implements OrderService {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                Integer pagesNumber = orderRepository.countPages(connection);
+                Integer linesNumber = orderRepository.countPages(connection);
                 connection.commit();
-                return pagesNumber;
+                return PageCountUtil.countPages(linesNumber);
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -86,9 +93,9 @@ public class OrderServiceImpl implements OrderService {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                Integer pagesNumber = orderRepository.countPagesForUser(connection, id);
+                Integer linesNumber = orderRepository.countPagesForUser(connection, id);
                 connection.commit();
-                return pagesNumber;
+                return PageCountUtil.countPages(linesNumber);
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -107,9 +114,9 @@ public class OrderServiceImpl implements OrderService {
             try {
                 connection.setAutoCommit(false);
                 OrderState orderState = OrderState.valueOf(state);
-                Integer pagesNumber = orderRepository.countPagesForState(connection, orderState);
+                Integer linesNumber = orderRepository.countPagesForState(connection, orderState);
                 connection.commit();
-                return pagesNumber;
+                return PageCountUtil.countPages(linesNumber);
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -166,13 +173,8 @@ public class OrderServiceImpl implements OrderService {
             try {
                 connection.setAutoCommit(false);
                 List<Order> orders = orderRepository.findAll(connection, pageNumber);
-                if (!orders.isEmpty()) {
-                    List<OrderForSaleDTO> orderForSaleDTOList = getOrderForSaleDTOList(orders);
-                    connection.commit();
-                    System.out.println("-------- " + orderForSaleDTOList.size() + " Orders Selected --------");
-                    return orderForSaleDTOList;
-                }
-                connection.commit();
+                List<OrderForSaleDTO> orderForSaleDTOList = extractOrders(connection, orders);
+                if (orderForSaleDTOList != null) return orderForSaleDTOList;
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -193,13 +195,8 @@ public class OrderServiceImpl implements OrderService {
                 connection.setAutoCommit(false);
                 OrderState state = OrderState.valueOf(orderState);
                 List<Order> orders = orderRepository.findAllByOrderState(connection, pageNumber, state);
-                if (!orders.isEmpty()) {
-                    List<OrderForSaleDTO> orderForSaleDTOList = getOrderForSaleDTOList(orders);
-                    connection.commit();
-                    System.out.println("-------- " + orderForSaleDTOList.size() + " Orders Selected --------");
-                    return orderForSaleDTOList;
-                }
-                connection.commit();
+                List<OrderForSaleDTO> orderForSaleDTOList = extractOrders(connection, orders);
+                if (orderForSaleDTOList != null) return orderForSaleDTOList;
             } catch (SQLException | OrderRepositoryException e) {
                 System.out.println(e.getMessage());
                 connection.rollback();
@@ -220,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
                 connection.setAutoCommit(false);
                 List<Order> orders = orderRepository.findAllByUserID(connection, userID, pageNumber);
                 if (!orders.isEmpty()) {
-                    List<OrderForCustomerDTO> orderDTOList = getOrderForCustomerDTOList(orders);
+                    List<OrderForCustomerDTO> orderDTOList = getOrderForCustomerDTOs(orders);
                     connection.commit();
                     System.out.println("-------- " + orderDTOList.size() + " Orders Selected --------");
                     return orderDTOList;
@@ -239,27 +236,40 @@ public class OrderServiceImpl implements OrderService {
         return Collections.emptyList();
     }
 
-    private List<OrderForSaleDTO> getOrderForSaleDTOList(List<Order> orders) {
+    private List<OrderForSaleDTO> extractOrders(Connection connection, List<Order> orders) throws SQLException {
+        if (!orders.isEmpty()) {
+            List<OrderForSaleDTO> orderForSaleDTOList = getOrderForSaleDTOs(orders);
+            connection.commit();
+            System.out.println("-------- " + orderForSaleDTOList.size() + " Orders Selected --------");
+            return orderForSaleDTOList;
+        }
+        connection.commit();
+        return null;
+    }
+
+    private List<OrderForSaleDTO> getOrderForSaleDTOs(List<Order> orders) {
         List<OrderForSaleDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
-            OrderForSaleDTO orderDTO = OrderForSaleConverterImpl.getInstance().toDTO(order);
-            BigDecimal itemPrice = order.getItem().getPrice();
-            Integer itemQuantity = order.getQuantity();
-            orderDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));
+            OrderForSaleDTO orderDTO = orderForSaleConverter.toDTO(order);
+            orderDTO.setSum(getSum(order));
             orderDTOList.add(orderDTO);
         }
         return orderDTOList;
     }
 
-    private List<OrderForCustomerDTO> getOrderForCustomerDTOList(List<Order> orders) {
+    private List<OrderForCustomerDTO> getOrderForCustomerDTOs(List<Order> orders) {
         List<OrderForCustomerDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
-            OrderForCustomerDTO orderDTO = OrderForCustomerConverterImpl.getInstance().toDTO(order);
-            BigDecimal itemPrice = order.getItem().getPrice();
-            Integer itemQuantity = order.getQuantity();
-            orderDTO.setSum(itemPrice.multiply(BigDecimal.valueOf(itemQuantity)));
+            OrderForCustomerDTO orderDTO = orderForCustomerConverter.toDTO(order);
+            orderDTO.setSum(getSum(order));
             orderDTOList.add(orderDTO);
         }
         return orderDTOList;
+    }
+
+    private BigDecimal getSum(Order order) {
+        BigDecimal itemPrice = order.getItem().getPrice();
+        Integer itemQuantity = order.getQuantity();
+        return itemPrice.multiply(BigDecimal.valueOf(itemQuantity));
     }
 }

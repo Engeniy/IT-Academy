@@ -3,7 +3,6 @@ package ru.mail.krivonos.project_jd1.repository;
 import ru.mail.krivonos.project_jd1.repository.exceptions.ItemRepositoryException;
 import ru.mail.krivonos.project_jd1.repository.model.Item;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
 
