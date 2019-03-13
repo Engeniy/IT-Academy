@@ -10,6 +10,7 @@ import ru.mail.krivonos.project_jd1.services.impl.UserServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.ProfileDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserInfoDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
+import ru.mail.krivonos.project_jd1.servlets.util.ValidationUtil;
 import ru.mail.krivonos.project_jd1.servlets.validators.ProfileDTOValidator;
 import ru.mail.krivonos.project_jd1.servlets.validators.UserInfoDTOValidator;
 import ru.mail.krivonos.project_jd1.servlets.validators.impl.ProfileDTOValidatorImpl;
@@ -34,9 +35,25 @@ public class ProfileUpdateCommand implements Command {
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
         Map<String, String> messages = new HashMap<>();
         req.setAttribute("messages", messages);
+
+        String oldPassword = req.getParameter("old-password");
+        String newPassword = req.getParameter("new-password");
+        String email = req.getParameter("email");
+        if (!oldPassword.trim().isEmpty() && !newPassword.trim().isEmpty()) {
+            ValidationUtil.validatePassword(messages, oldPassword);
+            ValidationUtil.validatePassword(messages, newPassword);
+            if (messages.isEmpty()) {
+                try {
+                    userService.updatePassword(email, oldPassword, newPassword);
+                } catch (PasswordChangeException e) {
+                    messages.put("password", "Incorrect password!");
+                }
+            } else {
+                return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
+            }
+        }
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
-        String email = req.getParameter("email");
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setName(name);
         userInfoDTO.setSurname(surname);
@@ -50,17 +67,8 @@ public class ProfileUpdateCommand implements Command {
         profileDTO.setAddress(address);
         profileDTO.setTelephone(telephone);
         profileDTOValidator.validate(messages, profileDTO);
-        req.setAttribute("profile", profileDTO);
 
-        String oldPassword = req.getParameter("old-password");
-        String newPassword = req.getParameter("new-password");
-        if (!oldPassword.trim().isEmpty() && !newPassword.trim().isEmpty()) {
-            try {
-                userService.updatePassword(email, oldPassword, newPassword);
-            } catch (PasswordChangeException e) {
-                messages.put("password", "Incorrect password!");
-            }
-        }
+        req.setAttribute("profile", profileDTO);
         if (!messages.isEmpty()) {
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
         }

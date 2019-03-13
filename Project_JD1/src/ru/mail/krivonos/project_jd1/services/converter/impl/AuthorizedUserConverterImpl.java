@@ -2,21 +2,22 @@ package ru.mail.krivonos.project_jd1.services.converter.impl;
 
 import ru.mail.krivonos.project_jd1.repository.model.User;
 import ru.mail.krivonos.project_jd1.services.converter.AuthorizedUserConverter;
-import ru.mail.krivonos.project_jd1.services.converter.RoleConverter;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 
 public class AuthorizedUserConverterImpl implements AuthorizedUserConverter {
 
     private static AuthorizedUserConverter instance;
 
-    private RoleConverter roleConverter = RoleConverterImpl.getInstance();
-
     private AuthorizedUserConverterImpl() {
     }
 
     public static AuthorizedUserConverter getInstance() {
         if (instance == null) {
-            instance = new AuthorizedUserConverterImpl();
+            synchronized (AuthorizedUserConverterImpl.class) {
+                if (instance == null) {
+                    instance = new AuthorizedUserConverterImpl();
+                }
+            }
         }
         return instance;
     }

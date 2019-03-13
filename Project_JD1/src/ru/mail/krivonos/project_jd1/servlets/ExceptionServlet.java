@@ -45,6 +45,7 @@ public class ExceptionServlet extends HttpServlet {
         System.out.println("Servlet name: " + servletName);
         System.out.println("Exception type: " + throwable.getClass().getName());
         System.out.println("Request URI: " + requestURI);
+        throwable.printStackTrace();
 
         String errorPage = ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ERROR_PAGE_PATH);
         req.getRequestDispatcher(errorPage).forward(req, resp);

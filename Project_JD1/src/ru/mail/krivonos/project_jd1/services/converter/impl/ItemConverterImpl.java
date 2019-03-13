@@ -15,7 +15,11 @@ public class ItemConverterImpl implements ItemConverter {
 
     public static ItemConverter getInstance() {
         if (instance == null) {
-            instance = new ItemConverterImpl();
+            synchronized (ItemConverterImpl.class) {
+                if (instance == null) {
+                    instance = new ItemConverterImpl();
+                }
+            }
         }
         return instance;
     }

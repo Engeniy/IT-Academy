@@ -22,7 +22,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     public static UserRepository getInstance() {
         if (instance == null) {
-            instance = new UserRepositoryImpl();
+            synchronized (UserRepositoryImpl.class) {
+                if (instance == null) {
+                    instance = new UserRepositoryImpl();
+                }
+            }
         }
         return instance;
     }

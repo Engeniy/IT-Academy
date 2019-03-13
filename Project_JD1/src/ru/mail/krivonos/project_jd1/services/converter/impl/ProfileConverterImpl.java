@@ -16,7 +16,11 @@ public class ProfileConverterImpl implements ProfileConverter {
 
     public static ProfileConverter getInstance() {
         if (instance == null) {
-            instance = new ProfileConverterImpl();
+            synchronized (ProfileConverterImpl.class) {
+                if (instance == null) {
+                    instance = new ProfileConverterImpl();
+                }
+            }
         }
         return instance;
     }

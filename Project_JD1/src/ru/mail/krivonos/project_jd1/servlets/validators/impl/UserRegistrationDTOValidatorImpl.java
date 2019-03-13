@@ -1,7 +1,7 @@
 package ru.mail.krivonos.project_jd1.servlets.validators.impl;
 
 import ru.mail.krivonos.project_jd1.services.model.user.UserRegistrationDTO;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.util.ValidationUtil;
 import ru.mail.krivonos.project_jd1.servlets.validators.UserRegistrationDTOValidator;
 
 import java.util.Map;
@@ -15,7 +15,11 @@ public class UserRegistrationDTOValidatorImpl implements UserRegistrationDTOVali
 
     public static UserRegistrationDTOValidator getInstance() {
         if (instance == null) {
-            instance = new UserRegistrationDTOValidatorImpl();
+            synchronized (UserRegistrationDTOValidatorImpl.class) {
+                if (instance == null) {
+                    instance = new UserRegistrationDTOValidatorImpl();
+                }
+            }
         }
         return instance;
     }
@@ -23,22 +27,12 @@ public class UserRegistrationDTOValidatorImpl implements UserRegistrationDTOVali
     @Override
     public void validate(Map<String, String> messages, UserRegistrationDTO userDTO) {
         String email = userDTO.getEmail();
-        if (email == null || email.trim().isEmpty()) {
-            messages.put("email", "Please enter email!");
-        } else if (!email.matches(Constants.EMAIL_VALIDATOR)) {
-            messages.put("email", "Invalid email address! Please try again!");
-        }
+        ValidationUtil.validateEmail(messages, email);
         String name = userDTO.getName();
-        if (name == null || name.trim().isEmpty()) {
-            messages.put("name", "Please enter name!");
-        }
+        ValidationUtil.validateName(messages, name);
         String surname = userDTO.getSurname();
-        if (surname == null || surname.trim().isEmpty()) {
-            messages.put("surname", "Please enter surname!");
-        }
+        ValidationUtil.validateSurname(messages, surname);
         String password = userDTO.getPassword();
-        if (password == null || password.trim().isEmpty()) {
-            messages.put("password", "Please enter password!");
-        }
+        ValidationUtil.validatePassword(messages, password);
     }
 }

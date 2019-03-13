@@ -39,7 +39,11 @@ public class UserServiceImpl implements UserService {
 
     public static UserService getInstance() {
         if (instance == null) {
-            instance = new UserServiceImpl();
+            synchronized (UserServiceImpl.class) {
+                if (instance == null) {
+                    instance = new UserServiceImpl();
+                }
+            }
         }
         return instance;
     }
@@ -94,6 +98,7 @@ public class UserServiceImpl implements UserService {
                 connection.setAutoCommit(false);
                 User userByEmail = userRepository.findUserByEmail(connection, email);
                 if (validatePassword(oldPassword, userByEmail.getPassword())) {
+                    newPassword = newPassword.trim();
                     userRepository.updatePassword(connection, email, oldPassword, newPassword);
                 } else {
                     throw new PasswordChangeException();
@@ -153,6 +158,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean validatePassword(String passwordInput, String savedPassword) {
-        return passwordInput.trim().equals(savedPassword);
+        return passwordInput.equals(savedPassword);
     }
 }

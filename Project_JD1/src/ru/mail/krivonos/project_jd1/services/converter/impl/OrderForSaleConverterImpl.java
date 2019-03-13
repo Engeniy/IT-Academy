@@ -20,7 +20,11 @@ public class OrderForSaleConverterImpl implements OrderForSaleConverter {
 
     public static OrderForSaleConverter getInstance() {
         if (instance == null) {
-            instance = new OrderForSaleConverterImpl();
+            synchronized (OrderForSaleConverterImpl.class) {
+                if (instance == null) {
+                    instance = new OrderForSaleConverterImpl();
+                }
+            }
         }
         return instance;
     }

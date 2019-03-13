@@ -17,7 +17,11 @@ public class OrderForCustomerConverterImpl implements OrderForCustomerConverter 
 
     public static OrderForCustomerConverter getInstance() {
         if (instance == null) {
-            instance = new OrderForCustomerConverterImpl();
+            synchronized (OrderForCustomerConverterImpl.class) {
+                if (instance == null) {
+                    instance = new OrderForCustomerConverterImpl();
+                }
+            }
         }
         return instance;
     }

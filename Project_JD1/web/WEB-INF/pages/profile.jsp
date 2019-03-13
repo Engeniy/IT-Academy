@@ -37,33 +37,33 @@
                     <c:out value="${messages['name']}"/>
                 </div>
             </c:if>
-            <input type="text" name="name" value="${profile.user.name}" required/>
+            <input type="text" name="name" value="${profile.user.name}" maxlength="31" required/>
             <c:if test="${not empty messages['surname']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['surname']}"/>
                 </div>
             </c:if>
-            <input type="text" name="surname" value="${profile.user.surname}" required/>
+            <input type="text" name="surname" value="${profile.user.surname}" maxlength="31" required/>
             <c:if test="${not empty messages['address']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['address']}"/>
                 </div>
             </c:if>
-            <input type="text" name="address" value="${profile.address}" required/>
+            <input type="text" name="address" value="${profile.address}"  maxlength="63" required/>
             <c:if test="${not empty messages['telephone']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['telephone']}"/>
                 </div>
             </c:if>
-            <input type="text" name="telephone" value="${profile.telephone}" required/>
+            <input type="text" name="telephone" value="${profile.telephone}"  maxlength="13" required/>
             <input type="email" name="email" value="${profile.user.email}" readonly required/>
             <c:if test="${not empty messages['password']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['password']}"/>
                 </div>
             </c:if>
-            <input type="password" name="old-password" placeholder="Old Password"/>
-            <input type="password" name="new-password" placeholder="New Password"/>
+            <input type="password" name="old-password" minlength="4" maxlength="15" placeholder="Old Password"/>
+            <input type="password" name="new-password" minlength="4" maxlength="15" placeholder="New Password"/>
             <button>Update</button>
         </form>
     </div>

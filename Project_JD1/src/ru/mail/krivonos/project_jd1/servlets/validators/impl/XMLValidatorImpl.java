@@ -22,7 +22,11 @@ public class XMLValidatorImpl implements XMLValidator {
 
     public static XMLValidator getInstance() {
         if (instance == null) {
-            instance = new XMLValidatorImpl();
+            synchronized (XMLValidatorImpl.class) {
+                if (instance == null) {
+                    instance = new XMLValidatorImpl();
+                }
+            }
         }
         return instance;
     }

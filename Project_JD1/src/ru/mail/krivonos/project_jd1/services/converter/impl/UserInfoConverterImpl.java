@@ -13,7 +13,11 @@ public class UserInfoConverterImpl implements UserInfoConverter {
 
     public static UserInfoConverter getInstance() {
         if (instance == null) {
-            instance = new UserInfoConverterImpl();
+            synchronized (UserInfoConverterImpl.class) {
+                if (instance == null) {
+                    instance = new UserInfoConverterImpl();
+                }
+            }
         }
         return instance;
     }

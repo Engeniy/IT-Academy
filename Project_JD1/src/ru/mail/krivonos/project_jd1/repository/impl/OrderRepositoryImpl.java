@@ -23,7 +23,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     public static OrderRepository getInstance() {
         if (instance == null) {
-            instance = new OrderRepositoryImpl();
+            synchronized (OrderRepositoryImpl.class) {
+                if (instance == null) {
+                    instance = new OrderRepositoryImpl();
+                }
+            }
         }
         return instance;
     }

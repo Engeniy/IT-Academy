@@ -20,7 +20,11 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     public static ItemRepository getInstance() {
         if (instance == null) {
-            instance = new ItemRepositoryImpl();
+            synchronized (ItemRepositoryImpl.class) {
+                if (instance == null) {
+                    instance = new ItemRepositoryImpl();
+                }
+            }
         }
         return instance;
     }

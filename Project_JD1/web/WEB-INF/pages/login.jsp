@@ -33,13 +33,13 @@
                     <c:out value="${messages['email']}"/>
                 </div>
             </c:if>
-            <input type="text" name="email" placeholder="E-mail" required/>
+            <input type="text" name="email" placeholder="E-mail" maxlength="31" required/>
             <c:if test="${not empty messages['password']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['password']}"/>
                 </div>
             </c:if>
-            <input type="password" name="password" placeholder="Password" required/>
+            <input type="password" name="password" placeholder="Password" minlength="4" maxlength="15" required/>
             <button>login</button>
             <p class="message">Not registered?</p>
             <button form="register">Create an account</button>

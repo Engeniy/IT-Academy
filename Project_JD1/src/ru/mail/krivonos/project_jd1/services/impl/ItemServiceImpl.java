@@ -37,7 +37,11 @@ public class ItemServiceImpl implements ItemService {
 
     public static ItemService getInstance() {
         if (instance == null) {
-            instance = new ItemServiceImpl();
+            synchronized (ItemServiceImpl.class) {
+                if (instance == null) {
+                    instance = new ItemServiceImpl();
+                }
+            }
         }
         return instance;
     }

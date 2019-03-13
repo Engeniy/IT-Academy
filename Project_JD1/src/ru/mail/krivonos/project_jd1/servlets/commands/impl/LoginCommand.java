@@ -8,7 +8,7 @@ import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.UserLoginDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 import ru.mail.krivonos.project_jd1.servlets.validators.UserLoginDTOValidator;
 import ru.mail.krivonos.project_jd1.servlets.validators.impl.UserLoginDTOValidatorImpl;
 
@@ -42,8 +42,8 @@ public class LoginCommand implements Command {
         AuthorizedUserDTO authorizedUserDTO = userService.loginUser(userLoginDTO);
         if (authorizedUserDTO != null) {
             HttpSession session = req.getSession();
-            session.setAttribute(Constants.SESSION_USER_KEY, authorizedUserDTO);
-            resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL +
+            session.setAttribute(ServletConstants.SESSION_USER_KEY, authorizedUserDTO);
+            resp.sendRedirect(req.getContextPath() + ServletConstants.DEFAULT_URL +
                     CommandEnum.ITEMS.name().toLowerCase());
             return null;
         } else {

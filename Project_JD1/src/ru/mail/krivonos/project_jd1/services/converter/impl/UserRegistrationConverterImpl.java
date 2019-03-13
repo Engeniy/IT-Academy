@@ -1,7 +1,6 @@
 package ru.mail.krivonos.project_jd1.services.converter.impl;
 
 import ru.mail.krivonos.project_jd1.repository.model.User;
-import ru.mail.krivonos.project_jd1.services.converter.RoleConverter;
 import ru.mail.krivonos.project_jd1.services.converter.UserRegistrationConverter;
 import ru.mail.krivonos.project_jd1.services.model.user.UserRegistrationDTO;
 
@@ -9,14 +8,16 @@ public class UserRegistrationConverterImpl implements UserRegistrationConverter 
 
     private static UserRegistrationConverter instance;
 
-    private RoleConverter roleConverter = RoleConverterImpl.getInstance();
-
     private UserRegistrationConverterImpl() {
     }
 
     public static UserRegistrationConverter getInstance() {
         if (instance == null) {
-            instance = new UserRegistrationConverterImpl();
+            synchronized (UserRegistrationConverterImpl.class) {
+                if (instance == null) {
+                    instance = new UserRegistrationConverterImpl();
+                }
+            }
         }
         return instance;
     }

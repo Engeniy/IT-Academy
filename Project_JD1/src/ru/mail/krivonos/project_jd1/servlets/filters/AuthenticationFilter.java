@@ -3,14 +3,9 @@ package ru.mail.krivonos.project_jd1.servlets.filters;
 import ru.mail.krivonos.project_jd1.repository.model.PermissionsEnum;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -65,7 +60,7 @@ public class AuthenticationFilter implements Filter {
         if (session == null) {
             defaultFilter(servletRequest, servletResponse, filterChain, req, resp, command);
         } else {
-            AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
+            AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(ServletConstants.SESSION_USER_KEY);
             if (authorizedUser == null) {
                 defaultFilter(servletRequest, servletResponse, filterChain, req, resp, command);
             } else {
@@ -76,7 +71,7 @@ public class AuthenticationFilter implements Filter {
                         if (CUSTOMER_AVAILABLE.contains(commandEnum)) {
                             filterChain.doFilter(servletRequest, servletResponse);
                         } else {
-                            session.removeAttribute(Constants.SESSION_USER_KEY);
+                            session.removeAttribute(ServletConstants.SESSION_USER_KEY);
                             resp.sendRedirect(req.getContextPath() + LOGIN_PATH);
                         }
                         break;
@@ -84,12 +79,12 @@ public class AuthenticationFilter implements Filter {
                         if (SALE_AVAILABLE.contains(commandEnum)) {
                             filterChain.doFilter(servletRequest, servletResponse);
                         } else {
-                            session.removeAttribute(Constants.SESSION_USER_KEY);
+                            session.removeAttribute(ServletConstants.SESSION_USER_KEY);
                             resp.sendRedirect(req.getContextPath() + LOGIN_PATH);
                         }
                         break;
                     default:
-                        session.removeAttribute(Constants.SESSION_USER_KEY);
+                        session.removeAttribute(ServletConstants.SESSION_USER_KEY);
                         resp.sendRedirect(req.getContextPath() + LOGIN_PATH);
                 }
             }

@@ -8,7 +8,7 @@ import ru.mail.krivonos.project_jd1.services.impl.ItemServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.item.ItemDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 import ru.mail.krivonos.project_jd1.servlets.validators.ItemDTOValidator;
 import ru.mail.krivonos.project_jd1.servlets.validators.impl.ItemDTOValidatorImpl;
 
@@ -45,8 +45,8 @@ public class AddItemCommand implements Command {
                 return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.CREATE_ITEM_PAGE_PATH);
             }
         }
-        resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
-                Constants.MESSAGE_POSTFIX + "Item added!");
+        resp.sendRedirect(req.getContextPath() + ServletConstants.DEFAULT_URL + CommandEnum.ITEMS.name().toLowerCase() +
+                ServletConstants.MESSAGE_POSTFIX + "Item added!");
         return null;
     }
 }

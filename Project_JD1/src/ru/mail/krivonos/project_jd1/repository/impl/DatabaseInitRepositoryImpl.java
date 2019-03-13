@@ -15,7 +15,11 @@ public class DatabaseInitRepositoryImpl implements DatabaseInitRepository {
 
     public static DatabaseInitRepository getInstance() {
         if (instance == null) {
-            instance = new DatabaseInitRepositoryImpl();
+            synchronized (DatabaseInitRepositoryImpl.class) {
+                if (instance == null) {
+                    instance = new DatabaseInitRepositoryImpl();
+                }
+            }
         }
         return instance;
     }

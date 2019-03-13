@@ -2,22 +2,7 @@ package ru.mail.krivonos.project_jd1.servlets;
 
 import ru.mail.krivonos.project_jd1.services.impl.DatabaseInitServiceImpl;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.AddItemCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.ChooseStateCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.CreateItemCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.DeleteItemCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.ItemsCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.LoginCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.LoginRedirectCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.LogoutCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.OrderCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.OrdersCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.ProfileCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.ProfileUpdateCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.RegistrationCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.RegistrationRedirectCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.UpdateStateCommand;
-import ru.mail.krivonos.project_jd1.servlets.commands.impl.UploadCommand;
+import ru.mail.krivonos.project_jd1.servlets.commands.impl.*;
 import ru.mail.krivonos.project_jd1.servlets.exceptions.CommandNotFoundException;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
 

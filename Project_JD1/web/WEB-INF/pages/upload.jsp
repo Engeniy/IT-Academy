@@ -16,9 +16,19 @@
 </head>
 <body>
 <%@include file="header.html" %>
-<c:if test="${not empty error}">
+<c:if test="${not empty messages['match']}">
     <div class="alert alert-danger">
-        <c:out value="${error}"/>
+        <c:out value="${messages['match']}"/>
+    </div>
+</c:if>
+<c:if test="${not empty messages['max-length']}">
+    <div class="alert alert-danger">
+        <c:out value="${messages['max-length']}"/>
+    </div>
+</c:if>
+<c:if test="${not empty messages['min-length']}">
+    <div class="alert alert-danger">
+        <c:out value="${messages['min-length']}"/>
     </div>
 </c:if>
 <div class="login-page">

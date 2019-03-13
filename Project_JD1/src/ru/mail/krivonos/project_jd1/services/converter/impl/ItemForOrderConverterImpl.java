@@ -13,7 +13,11 @@ public class ItemForOrderConverterImpl implements ItemForOrderConverter {
 
     public static ItemForOrderConverter getInstance() {
         if (instance == null) {
-            instance = new ItemForOrderConverterImpl();
+            synchronized (ItemForOrderConverterImpl.class) {
+                if (instance == null) {
+                    instance = new ItemForOrderConverterImpl();
+                }
+            }
         }
         return instance;
     }

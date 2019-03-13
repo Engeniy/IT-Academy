@@ -43,7 +43,11 @@ public class OrderServiceImpl implements OrderService {
 
     public static OrderService getInstance() {
         if (instance == null) {
-            instance = new OrderServiceImpl();
+            synchronized (OrderServiceImpl.class) {
+                if (instance == null) {
+                    instance = new OrderServiceImpl();
+                }
+            }
         }
         return instance;
     }

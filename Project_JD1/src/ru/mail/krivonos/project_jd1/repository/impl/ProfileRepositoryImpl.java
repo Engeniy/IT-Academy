@@ -19,7 +19,11 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     public static ProfileRepository getInstance() {
         if (instance == null) {
-            instance = new ProfileRepositoryImpl();
+            synchronized (ProfileRepositoryImpl.class) {
+                if (instance == null) {
+                    instance = new ProfileRepositoryImpl();
+                }
+            }
         }
         return instance;
     }

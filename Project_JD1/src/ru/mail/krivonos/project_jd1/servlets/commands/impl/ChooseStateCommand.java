@@ -8,7 +8,7 @@ import ru.mail.krivonos.project_jd1.services.impl.OrderServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.order.OrderForSaleDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
 import ru.mail.krivonos.project_jd1.servlets.model.CommandEnum;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ public class ChooseStateCommand implements Command {
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String state = req.getParameter("filter-state");
         if (state.equals("ALL")) {
-            resp.sendRedirect(req.getContextPath() + Constants.DEFAULT_URL + CommandEnum.ORDERS.name().toLowerCase());
+            resp.sendRedirect(req.getContextPath() + ServletConstants.DEFAULT_URL + CommandEnum.ORDERS.name().toLowerCase());
             return null;
         }
         req.setAttribute("states", OrderState.values());

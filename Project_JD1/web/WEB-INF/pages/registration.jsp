@@ -28,37 +28,37 @@
                     <c:out value="${messages['name']}"/>
                 </div>
             </c:if>
-            <input type="text" name="name" placeholder="Name" required/>
+            <input type="text" name="name" placeholder="Name" maxlength="31" required/>
             <c:if test="${not empty messages['surname']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['surname']}"/>
                 </div>
             </c:if>
-            <input type="text" name="surname" placeholder="Surname" required/>
+            <input type="text" name="surname" placeholder="Surname" maxlength="31" required/>
             <c:if test="${not empty messages['address']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['address']}"/>
                 </div>
             </c:if>
-            <input type="text" name="address" placeholder="Address" required/>
+            <input type="text" name="address" placeholder="Address" maxlength="63" required/>
             <c:if test="${not empty messages['telephone']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['telephone']}"/>
                 </div>
             </c:if>
-            <input type="text" name="telephone" placeholder="Telephone" required/>
+            <input type="text" name="telephone" placeholder="Telephone: +375291112233"  maxlength="13" required/>
             <c:if test="${not empty messages['email']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['email']}"/>
                 </div>
             </c:if>
-            <input type="email" name="email" placeholder="E-mail" required/>
+            <input type="email" name="email" placeholder="E-mail" maxlength="31" required/>
             <c:if test="${not empty messages['password']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['password']}"/>
                 </div>
             </c:if>
-            <input type="password" name="password" placeholder="Password" required/>
+            <input type="password" name="password" placeholder="Password" maxlength="15" required/>
             <button>Register</button>
             <p class="message">Already registered?</p>
             <button form="login">Sign In</button>

@@ -26,7 +26,11 @@ public class ProfileServiceImpl implements ProfileService {
 
     public static ProfileService getInstance() {
         if (instance == null) {
-            instance = new ProfileServiceImpl();
+            synchronized (ProfileServiceImpl.class) {
+                if (instance == null) {
+                    instance = new ProfileServiceImpl();
+                }
+            }
         }
         return instance;
     }

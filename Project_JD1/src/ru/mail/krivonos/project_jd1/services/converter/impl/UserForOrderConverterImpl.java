@@ -13,7 +13,11 @@ public class UserForOrderConverterImpl implements UserForOrderConverter {
 
     public static UserForOrderConverter getInstance() {
         if (instance == null) {
-            instance = new UserForOrderConverterImpl();
+            synchronized (UserForOrderConverterImpl.class) {
+                if (instance == null) {
+                    instance = new UserForOrderConverterImpl();
+                }
+            }
         }
         return instance;
     }

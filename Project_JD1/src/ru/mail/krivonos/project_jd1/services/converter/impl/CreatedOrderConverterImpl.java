@@ -16,7 +16,11 @@ public class CreatedOrderConverterImpl implements CreatedOrderConverter {
 
     public static CreatedOrderConverter getInstance() {
         if (instance == null) {
-            instance = new CreatedOrderConverterImpl();
+            synchronized (CreatedOrderConverterImpl.class) {
+                if (instance == null) {
+                    instance = new CreatedOrderConverterImpl();
+                }
+            }
         }
         return instance;
     }

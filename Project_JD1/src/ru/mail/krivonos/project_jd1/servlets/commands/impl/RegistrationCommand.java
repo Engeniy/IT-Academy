@@ -61,13 +61,13 @@ public class RegistrationCommand implements Command {
         if (!messages.isEmpty()) {
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.REGISTRATION_PAGE_PATH);
         }
-        profileService.add(profileDTO);
         try {
             userService.add(userRegistrationDTO);
         } catch (RegistrationException e) {
             req.setAttribute("error", "Registration error! The same email exists!");
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.REGISTRATION_PAGE_PATH);
         }
+        profileService.add(profileDTO);
         req.setAttribute("message", "Successfully registered!");
         return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
     }

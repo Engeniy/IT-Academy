@@ -8,7 +8,7 @@ import ru.mail.krivonos.project_jd1.services.impl.ItemServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.item.ItemDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,11 +29,11 @@ public class ItemsCommand implements Command {
         req.setAttribute("pages", pages);
         String page = req.getParameter("page");
         Integer pageNumber;
-        if (page != null) {
+        if (page != null && page.matches("\\d+")) {
             pageNumber = Integer.parseInt(page);
             if (pageNumber == 0) {
                 pageNumber = 1;
-            } else if (pageNumber > pages) {
+            } else if (pageNumber > pages && pages > 0) {
                 pageNumber = pages;
             }
         } else {
@@ -45,7 +45,7 @@ public class ItemsCommand implements Command {
         }
         req.setAttribute("items", items);
         HttpSession session = req.getSession();
-        AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
+        AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(ServletConstants.SESSION_USER_KEY);
         PermissionsEnum permission = authorizedUser.getPermission();
         switch (permission) {
             case CUSTOMER_PERMISSION:
@@ -53,7 +53,7 @@ public class ItemsCommand implements Command {
             case SALE_PERMISSION:
                 return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.ITEMS_FOR_SALE_PAGE_PATH);
             default:
-                session.removeAttribute(Constants.SESSION_USER_KEY);
+                session.removeAttribute(ServletConstants.SESSION_USER_KEY);
                 return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
         }
     }

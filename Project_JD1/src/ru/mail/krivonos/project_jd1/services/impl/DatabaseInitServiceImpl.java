@@ -30,7 +30,11 @@ public class DatabaseInitServiceImpl implements DatabaseInitService {
 
     public static DatabaseInitService getInstance() {
         if (instance == null) {
-            instance = new DatabaseInitServiceImpl();
+            synchronized (DatabaseInitServiceImpl.class) {
+                if (instance == null) {
+                    instance = new DatabaseInitServiceImpl();
+                }
+            }
         }
         return instance;
     }

@@ -27,6 +27,17 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
     }
 
+    public static ConnectionService getInstance() {
+        if (instance == null) {
+            synchronized (ConnectionServiceImpl.class) {
+                if (instance == null) {
+                    instance = new ConnectionServiceImpl();
+                }
+            }
+        }
+        return instance;
+    }
+
     @Override
     public Connection getConnection() {
         System.out.println("-------- Creating Connection --------");
@@ -43,12 +54,5 @@ public class ConnectionServiceImpl implements ConnectionService {
             throw new RuntimeException(e);
         }
         return connection;
-    }
-
-    public static ConnectionService getInstance() {
-        if (instance == null) {
-            instance = new ConnectionServiceImpl();
-        }
-        return instance;
     }
 }

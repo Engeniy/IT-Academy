@@ -7,7 +7,7 @@ import ru.mail.krivonos.project_jd1.services.impl.ProfileServiceImpl;
 import ru.mail.krivonos.project_jd1.services.model.ProfileDTO;
 import ru.mail.krivonos.project_jd1.services.model.user.AuthorizedUserDTO;
 import ru.mail.krivonos.project_jd1.servlets.commands.Command;
-import ru.mail.krivonos.project_jd1.servlets.model.Constants;
+import ru.mail.krivonos.project_jd1.servlets.constants.ServletConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,13 +21,13 @@ public class ProfileCommand implements Command {
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession session = req.getSession();
-        AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(Constants.SESSION_USER_KEY);
+        AuthorizedUserDTO authorizedUser = (AuthorizedUserDTO) session.getAttribute(ServletConstants.SESSION_USER_KEY);
         ProfileDTO profileDTO = profileService.getByUserID(authorizedUser.getId());
         if (profileDTO != null) {
             req.setAttribute("profile", profileDTO);
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.PROFILE_PAGE_PATH);
         } else {
-            session.removeAttribute(Constants.SESSION_USER_KEY);
+            session.removeAttribute(ServletConstants.SESSION_USER_KEY);
             return ConfigurationManagerImpl.getInstance().getProperty(PropertiesVariables.LOGIN_PAGE_PATH);
         }
     }

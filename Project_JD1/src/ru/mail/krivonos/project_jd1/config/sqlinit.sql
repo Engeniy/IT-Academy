@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS User
 CREATE TABLE IF NOT EXISTS Profile
 (
   address   VARCHAR(63) NOT NULL,
-  telephone VARCHAR(31) NOT NULL
+  telephone VARCHAR(13) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS Item
 (
@@ -88,8 +88,8 @@ VALUES ((SELECT u.id
          WHERE u.email = 'sale@sale.com'), 'Pritytskogo 80 40', '+375447337351');
 INSERT INTO User (email, surname, name, password, role_id)
 VALUES ('customer@customer.com', 'Santiar', 'Azalis', 'root', (SELECT r.id
-                                                                      FROM Role r
-                                                                      WHERE r.name = 'CUSTOMER_USER'));
+                                                               FROM Role r
+                                                               WHERE r.name = 'CUSTOMER_USER'));
 INSERT INTO Profile (user_id, address, telephone)
 VALUES ((SELECT u.id
          FROM User u

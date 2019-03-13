@@ -12,7 +12,11 @@ public class XMLItemConverterImpl implements XMLItemConverter {
 
     public static XMLItemConverter getInstance() {
         if (instance == null) {
-            instance = new XMLItemConverterImpl();
+            synchronized (XMLItemConverterImpl.class) {
+                if (instance == null) {
+                    instance = new XMLItemConverterImpl();
+                }
+            }
         }
         return instance;
     }

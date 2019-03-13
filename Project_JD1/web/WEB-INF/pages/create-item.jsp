@@ -31,7 +31,7 @@
                     <c:out value="${messages['name']}"/>
                 </div>
             </c:if>
-            <input type="text" name="name" placeholder="Item name" required/>
+            <input type="text" name="name" placeholder="Item name"  maxlength="31" required/>
             <c:if test="${not empty messages['description']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['description']}"/>
@@ -43,7 +43,7 @@
                     <c:out value="${messages['uniqueNumber']}"/>
                 </div>
             </c:if>
-            <input type="text" name="uniqueNumber" placeholder="Item unique number" required/>
+            <input type="text" name="uniqueNumber" placeholder="Item unique number"  maxlength="63" required/>
             <c:if test="${not empty messages['price']}">
                 <div class="alert alert-danger">
                     <c:out value="${messages['price']}"/>
