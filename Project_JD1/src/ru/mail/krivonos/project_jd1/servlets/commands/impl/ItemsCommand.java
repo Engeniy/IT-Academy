@@ -33,8 +33,12 @@ public class ItemsCommand implements Command {
             pageNumber = Integer.parseInt(page);
             if (pageNumber == 0) {
                 pageNumber = 1;
-            } else if (pageNumber > pages && pages > 0) {
-                pageNumber = pages;
+            } else if (pageNumber > pages) {
+                if (pages > 0) {
+                    pageNumber = pages;
+                } else {
+                    pageNumber = 1;
+                }
             }
         } else {
             pageNumber = 1;

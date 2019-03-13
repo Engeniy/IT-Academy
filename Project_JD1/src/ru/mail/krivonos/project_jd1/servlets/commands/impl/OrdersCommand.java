@@ -44,8 +44,12 @@ public class OrdersCommand implements Command {
             case CUSTOMER_PERMISSION:
                 Integer userPages = orderService.countPagesForUser(authorizedUser.getId());
                 req.setAttribute("pages", userPages);
-                if (pageNumber > userPages && userPages > 0) {
-                    pageNumber = userPages;
+                if (pageNumber > userPages) {
+                    if (userPages > 0) {
+                        pageNumber = userPages;
+                    } else {
+                        pageNumber = 1;
+                    }
                 }
                 List<OrderForCustomerDTO> userOrders = orderService.getAllForUser(authorizedUser.getId(), pageNumber);
                 if (userOrders.isEmpty()) {
@@ -57,8 +61,12 @@ public class OrdersCommand implements Command {
                 Integer pages = orderService.countPages();
                 req.setAttribute("states", OrderState.values());
                 req.setAttribute("pages", pages);
-                if (pageNumber > pages && pages > 0) {
-                    pageNumber = pages;
+                if (pageNumber > pages) {
+                    if (pages > 0) {
+                        pageNumber = pages;
+                    } else {
+                        pageNumber = 1;
+                    }
                 }
                 List<OrderForSaleDTO> orders = orderService.getAll(pageNumber);
                 if (orders.isEmpty()) {
